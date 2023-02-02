@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "reimagined",
+	"version": "${version}",
+	"name": "ReImagined",
+	"description": "This is ReImagined mod.",
+	"authors": [
+		"Rhseung"
+	],
+	"contact": {
+		"homepage": "",
+		"sources": "https://github.com/Rhseung/ReImagined"
+	},
+	"license": "MIT License",
+	"icon": "assets/reimagined/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"value": "net.rhseung.reimagined.ReImagined",
+				"adapter": "kotlin"
+			}
+		],
+		"fabric-datagen": [
+			{
+				"value": "net.rhseung.reimagined.datagen.DataGenerator",
+				"adapter": "kotlin"
+			}
+		]
+	},
+	"mixins": [
+		"reimagined.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.13",
+		"minecraft": "~1.19.3",
+		"java": ">=17",
+		"fabric-api": "*",
+		"fabric-language-kotlin": ">=1.8.0"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
