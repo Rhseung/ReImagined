@@ -21,6 +21,12 @@
 				"adapter": "kotlin"
 			}
 		],
+		"client": [
+			{
+				"value": "net.rhseung.reimagined.ReImaginedClient",
+				"adapter": "kotlin"
+			}
+		],
 		"fabric-datagen": [
 			{
 				"value": "net.rhseung.reimagined.datagen.DataGenerator",
@@ -33,7 +39,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.14.13",
-		"minecraft": "~1.19.3",
+		"minecraft": "1.19.3",
 		"java": ">=17",
 		"fabric-api": "*",
 		"fabric-language-kotlin": ">=1.8.0"
