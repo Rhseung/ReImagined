@@ -28,10 +28,11 @@ import net.rhseung.reimagined.tool.gears.base.IGearItem
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.registration.ModBlockTags
-import net.rhseung.reimagined.tool.parts.BindingPart
-import net.rhseung.reimagined.tool.parts.HandlePart
+import net.rhseung.reimagined.tool.gears.enums.GearType
+import net.rhseung.reimagined.tool.gears.util.GearData.NBT_ROOT
+import net.rhseung.reimagined.tool.gears.util.GearData.putConstructionIfMissing
+import net.rhseung.reimagined.tool.gears.util.GearData.putStatIfMissing
 import net.rhseung.reimagined.tool.parts.base.IPartItem
-import net.rhseung.reimagined.tool.parts.HeadPart
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Name.toPathName
 import java.util.*
@@ -78,7 +79,7 @@ object GearHelper {
 				GearData.putConstructionIfMissing(stack, partType)
 			}
 			
-			// todo: 파츠들 parts/head_wood 로 register 해야됨
+			// todo: 파츠들 parts/pickaxe_head_wood, parts/handle_wood 로 register 해야됨
 			val part = Registries.ITEM.get(Identifier(ReImagined.MOD_ID,
 				"parts/${partType.name.toPathName()}_" + constructionCompound.getString(partType.name.toPathName())))
 			
@@ -115,11 +116,7 @@ object GearHelper {
 		return getStat(stack, Stat.ATTACK_SPEED).toFloat()
 	}
 	
-	// todo: 이거 nbt로 못하는 놈이라 어케해야하노
-	//  - Silent's Gear 참고하기
-	fun getEnchantability(
-		stack: ItemStack
-	): Int {
+	fun getEnchantability(stack: ItemStack): Int {
 		return getStat(stack, Stat.ENCHANTABILITY).toInt()
 	}
 	
@@ -160,8 +157,8 @@ object GearHelper {
 				)
 			)
 			
-			// todo: reach distance attribute도 추가하기
-			// todo: WEAPON_MODIFIER_NAME
+			// todofar: reach distance attribute도 추가하기
+			// todofar: WEAPON_MODIFIER_NAME 사용
 		}
 		
 		return builder.build()
@@ -224,7 +221,7 @@ object GearHelper {
 			null, player,
 			SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1f, 1f
 		)
-		// todo: 부서질 때 파티클까지 튀기 (안해도 됨)
+		// todofar: 부서질 때 파티클까지 튀기 (안해도 됨)
 	}
 	
 	fun onCraft(
@@ -232,7 +229,7 @@ object GearHelper {
 		world: World,
 		player: PlayerEntity
 	) {
-		// todo: 제작 시 `player.world`로 제작 효과음 재생할 수 있음
+		// note: 제작 시 `player.world`로 제작 효과음 재생할 수 있음
 //		GearData.reCalculate(stack, world, player)
 	}
 	
@@ -260,9 +257,11 @@ object GearHelper {
 		return !broken(stack)
 	}
 	
-	fun postProcessNbt(nbt: NbtCompound) {
-		// todo: nbt 미리 넣어놓기
-		//  - dummy material이 필요한가?
+	fun postProcessNbt(nbt: NbtCompound, includeStats: List<Stat>, includeParts: List<PartType>) {
+		val root = nbt.getCompound(NBT_ROOT)
+		
+		includeStats.forEach { stat -> putStatIfMissing(root, stat) }
+		includeParts.forEach { part -> putConstructionIfMissing(root, part) }
 	}
 	
 	fun appendTooltip(
@@ -275,7 +274,7 @@ object GearHelper {
 		for (stat in includeStats) {
 			tooltip.add(stat.getDisplayText(stack))
 		}
-		// todo: Mining Tier는 알파벳으로 써주는게 좋음
+		// todofar: Mining Tier는 알파벳으로 써주는게 좋음
 	}
 	
 	fun getName(stack: ItemStack): Text {
@@ -285,17 +284,23 @@ object GearHelper {
 	fun canRepair(
 		stack: ItemStack,
 		ingredient: ItemStack,
-		includeParts: List<PartType>
+		includeParts: List<PartType>,
+		gearType: GearType
 	): Boolean {
 		return if (isNotGear(stack)) false
-		else getConstructions(stack, includeParts)[PartType.HEAD]!!.material.repairIngredient.test(ingredient)
+		else getConstructions(stack, includeParts)[PartType.HEAD(gearType)]!!.material.repairIngredient.test(ingredient)
 	}
 	
+	@JvmStatic
 	fun isGear(stack: ItemStack): Boolean {
 		return stack.item is IGearItem
 	}
 	
 	fun isNotGear(stack: ItemStack): Boolean {
 		return !isGear(stack)
+	}
+	
+	fun isEnchantable(stack: ItemStack): Boolean {
+		return notBroken(stack)
 	}
 }

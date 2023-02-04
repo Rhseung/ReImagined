@@ -41,6 +41,21 @@ object GearData {
 		}
 	}
 	
+	fun putStatIfMissing(
+		root: NbtCompound,
+		stat: Stat
+	) {
+		val root = root.getCompound(NBT_ROOT_STATS)
+		val compoundKey = stat.name.toPathName()
+		
+		if (!root.contains(compoundKey)) {
+			when {
+				stat.isInt -> root.putInt(compoundKey, stat.defaultValue as Int)
+				!stat.isInt -> root.putFloat(compoundKey, stat.defaultValue as Float)
+			}
+		}
+	}
+	
 	fun putConstructionIfMissing(
 		stack: ItemStack,
 		partType: PartType
@@ -49,8 +64,19 @@ object GearData {
 		val compoundKey = partType.name.toPathName()
 		
 		if (!root.contains(compoundKey)) {
-			// todo: Material.Wood 말고 dummy material이 필요해 보이는데...
-			root.putString(compoundKey, Material.Wood.name.toPathName())    // fixme: wood
+			root.putString(compoundKey, Material.Dummy.name.toPathName())
+		}
+	}
+	
+	fun putConstructionIfMissing(
+		root: NbtCompound,
+		partType: PartType
+	) {
+		val root = root.getCompound(NBT_ROOT_CONSTRUCTION)
+		val compoundKey = partType.name.toPathName()
+		
+		if (!root.contains(compoundKey)) {
+			root.putString(compoundKey, Material.Dummy.name.toPathName())
 		}
 	}
 }

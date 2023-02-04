@@ -17,25 +17,25 @@ enum class Stat constructor(
 	
 	val isInt: Boolean = false
 ) {
-	DURABILITY(0, { stack ->
+	DURABILITY(1, { stack ->
 		Color.DARK_GREEN.gradient(Color.DARK_RED, getRatioDurability(stack))
 	}, isInt = true),
 	ATTACK_DAMAGE(0F, { stack ->
 		Color.SMOOTH_RED
 	}),
-	ATTACK_SPEED(0F, { stack ->
+	ATTACK_SPEED(1.0F, { stack ->
 		Color.SMOOTH_VIOLET
 	}),
 	MINING_TIER(0, { stack ->
 		getColor(getMiningTier(stack))
 	}, isInt = true),
-	MINING_SPEED(0F, { stack ->
+	MINING_SPEED(1.0F, { stack ->
 		Color.SMOOTH_BLUE
 	}),
-	ENCHANTABILITY(0, { stack ->
+	ENCHANTABILITY(10, { stack ->
 		Color.GOLD
 	}, isInt = true);
-	// todo: 다른 스탯도 추가하기
+	// todofar: 다른 스탯도 추가하기
 	
 	fun getDisplayText(
 		stack: ItemStack,
@@ -46,6 +46,7 @@ enum class Stat constructor(
 					"{${if (isInt) getStat(stack, this).toInt() else point(getStat(stack, this).toFloat())}}",
 			colorOfStatName, color(stack)
 		)
-		// todo: mining tier처럼 알파벳으로 출력해야하는 상황에 대처하는 방안 만들기
+		// todofar: Text.translatable
+		// todofar: mining tier처럼 알파벳으로 출력해야하는 상황에 대처하는 방안 만들기
 	}
 }

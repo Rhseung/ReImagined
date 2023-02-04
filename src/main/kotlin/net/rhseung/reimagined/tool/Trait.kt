@@ -4,7 +4,7 @@ import net.minecraft.item.Item
 
 enum class Trait {
 	Fireproof;
-	// todo: trait 더 만들기
+	// todofar: trait 더 만들기
 	//  - 바닐라틱한 것만 만들기
 	//  - 일단은 Item.Settings에 있는 거만
 	

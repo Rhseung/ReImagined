@@ -17,28 +17,21 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.gears.base.IGearItem
+import net.rhseung.reimagined.tool.gears.base.IMiningGearItem
 import net.rhseung.reimagined.tool.gears.util.GearHelper
 import net.rhseung.reimagined.tool.gears.enums.GearType
+import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 
-class PickaxeGear constructor (
+class PickaxeGear constructor(
 
-) : IGearItem, Item(Item.Settings()) {
-	override val includeStats = listOf(
-		Stat.ATTACK_DAMAGE,
-		Stat.ATTACK_SPEED,
-		Stat.MINING_SPEED,
-		Stat.MINING_TIER,
-		Stat.DURABILITY,
-		Stat.ENCHANTABILITY
-	)
-	
+) : IMiningGearItem, Item(Item.Settings()) {
 	override val includeParts = listOf(
-		PartType.HEAD,
-		PartType.BINDING,
-		PartType.HANDLE
+		PartType.HANDLE,
+		PartType.PICKAXE_HEAD,
+		PartType.BINDING
 	)
-	
+
 	override fun getType(): GearType {
 		return GearType.Pickaxe
 	}
@@ -55,20 +48,12 @@ class PickaxeGear constructor (
 		return GearHelper.getRatioDurability(stack)
 	}
 	
-	override fun getEnchantability(): Int {
-		return 10   // fixme
-		
-//		todo: enchantability는 nbt에서 정해지는게 아니라 아이템 고유의 특성이라서 난감함
-//		 - 파츠에서 뽑으려고 했는데 getConstructions도 인자로 ItemStack이 필요해서 안됨
-//		return GearHelper.getEnchantability(stack)
+	override fun getEnchantability(stack: ItemStack): Int {
+		return GearHelper.getEnchantability(stack)
 	}
 	
-	override fun broken(stack: ItemStack): Boolean {
-		return GearHelper.broken(stack)
-	}
-	
-	override fun getTier(stack: ItemStack): Int {
-		return GearHelper.getMiningTier(stack)
+	override fun isEnchantable(stack: ItemStack): Boolean {
+		return GearHelper.isEnchantable(stack)
 	}
 	
 	override fun onCraft(
@@ -77,6 +62,20 @@ class PickaxeGear constructor (
 		player: PlayerEntity
 	) {
 		return GearHelper.onCraft(stack, world, player)
+	}
+	
+	override fun broken(stack: ItemStack): Boolean {
+		return GearHelper.broken(stack)
+	}
+	
+	override fun getConstructions(
+		stack: ItemStack
+	): Map<PartType, IPartItem> {
+		return GearHelper.getConstructions(stack, includeParts)
+	}
+	
+	override fun getTier(stack: ItemStack): Int {
+		return GearHelper.getMiningTier(stack)
 	}
 	
 	override fun getAttributeModifiers(
@@ -99,7 +98,7 @@ class PickaxeGear constructor (
 		stack: ItemStack,
 		ingredient: ItemStack
 	): Boolean {
-		return GearHelper.canRepair(stack, ingredient, includeParts)
+		return GearHelper.canRepair(stack, ingredient, includeParts, getType())
 	}
 	
 	override fun getName(stack: ItemStack): Text {
@@ -114,7 +113,7 @@ class PickaxeGear constructor (
 	}
 	
 	override fun postProcessNbt(nbt: NbtCompound) {
-		GearHelper.postProcessNbt(nbt)
+		GearHelper.postProcessNbt(nbt, includeStats, includeParts)
 	}
 	
 	override fun postHit(

@@ -1,0 +1,40 @@
+package net.rhseung.reimagined.mixin;
+
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.item.Item;
+import net.minecraft.item.MiningToolItem;
+import net.rhseung.reimagined.tool.gears.PickaxeGear;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+/**
+ * $1: ARMOR
+ * $2: BREAKABLE
+ * $3: BOW
+ * $4: WEARABLE
+ * $5: CROSSBOW
+ * $6: VANISHABLE
+ * $7: ARMOR_FEET
+ * $8: ARMOR_LEGS
+ * $9: ARMOR_CHEST
+ * $10: ARMOR_HEAD
+ * $11: WEAPON
+ * $12: DIGGER
+ * $13: FISHING_ROD
+ * $14: TRIDENT
+ */
+@Mixin(targets = {"net/minecraft/enchantment/EnchantmentTarget$12"})
+public abstract class MixinEnchantmentTarget {
+    @ModifyReturnValue(
+            method = "isAcceptableItem(Lnet/minecraft/item/Item;)Z",
+            at = @At("RETURN")
+    )
+    private boolean diggerEnchantmentExpand(boolean original, Item item) {
+        return original || item instanceof PickaxeGear;
+        // todo: IGearItem을 상속받는 IMiningGearItem을 만들어서 그걸로 `item instanceof IMiningGearItem` 하자
+    }
+}

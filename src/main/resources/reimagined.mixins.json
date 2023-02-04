@@ -3,7 +3,8 @@
 	"package": "net.rhseung.reimagined.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin"
+		"MixinEnchantability",
+		"MixinEnchantmentTarget"
 	],
 	"injectors": {
 		"defaultRequire": 1
