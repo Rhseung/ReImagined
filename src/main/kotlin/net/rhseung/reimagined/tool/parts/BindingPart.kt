@@ -35,7 +35,7 @@ class BindingPart constructor (
 				
 				ret.add(ModItems.registerItem(
 					"parts/${getType().name.toPathName()}_${material.name.toPathName()}",
-					BindingPart(material), ModItemGroups.PARTS
+					BindingPart(material), if (material != Material.DUMMY) ModItemGroups.PARTS else null
 				))
 			}
 			

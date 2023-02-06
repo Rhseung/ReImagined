@@ -1,6 +1,10 @@
 package net.rhseung.reimagined.tool.parts
 
+import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
+import net.minecraft.text.Text
+import net.minecraft.world.World
 import net.rhseung.reimagined.registration.ModItemGroups
 import net.rhseung.reimagined.registration.ModItems
 import net.rhseung.reimagined.tool.Material
@@ -37,7 +41,7 @@ class PickaxeHeadPart constructor (
 				
 				ret.add(ModItems.registerItem(
 					"parts/${getType().name.toPathName()}_${material.name.toPathName()}",
-					PickaxeHeadPart(material), ModItemGroups.PARTS
+					PickaxeHeadPart(material), if (material != Material.DUMMY) ModItemGroups.PARTS else null
 				))
 			}
 			

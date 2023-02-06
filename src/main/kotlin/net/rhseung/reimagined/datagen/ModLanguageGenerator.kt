@@ -15,11 +15,13 @@ class ModLanguageGenerator(
 	
 	override fun generateTranslations(translationBuilder: TranslationBuilder) {
 		ModItems.PARTS.values.forEach { they ->
-			they.forEach { it ->
-				if (it is Item) translationBuilder.add(it, "${it.material.name.toDisplayName()} ${it.getType().name.toDisplayName()} Part")
+			they.forEach {
+				if (it is Item) translationBuilder.add(
+					it, "${it.material.name.toDisplayName()} ${it.getType().name.toDisplayName()} Part"
+				)
 			}
 		}
-		ModItems.GEARS.forEach { it ->
+		ModItems.GEARS.forEach {
 			if (it is Item) translationBuilder.add(it, it.getType().name.toDisplayName())
 		}
 	}

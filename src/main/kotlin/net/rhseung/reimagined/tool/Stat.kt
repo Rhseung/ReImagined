@@ -4,7 +4,7 @@ import net.rhseung.reimagined.utils.Color
 import net.minecraft.item.ItemStack
 import net.minecraft.text.MutableText
 import net.rhseung.reimagined.tool.Material.Companion.getColor
-import net.rhseung.reimagined.tool.gears.util.GearHelper.getRatioDurability
+import net.rhseung.reimagined.tool.gears.util.GearHelper.getRemainDurabilityRatio
 import net.rhseung.reimagined.tool.gears.util.GearHelper.getMiningTier
 import net.rhseung.reimagined.tool.gears.util.GearHelper.getStat
 import net.rhseung.reimagined.utils.Name.toDisplayName
@@ -18,7 +18,7 @@ enum class Stat constructor(
 	val isInt: Boolean = false
 ) {
 	DURABILITY(1.0F, { stack ->
-		Color.DARK_GREEN.gradient(Color.DARK_RED, getRatioDurability(stack))
+		Color.DARK_GREEN.gradient(Color.DARK_RED, getRemainDurabilityRatio(stack))
 	}, isInt = true),
 	ATTACK_DAMAGE(0F, { stack ->
 		Color.SMOOTH_RED

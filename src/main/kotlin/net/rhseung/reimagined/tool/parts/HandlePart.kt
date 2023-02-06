@@ -37,7 +37,7 @@ class HandlePart constructor (
 				
 				ret.add(ModItems.registerItem(
 					"parts/${getType().name.toPathName()}_${material.name.toPathName()}",
-					HandlePart(material), ModItemGroups.PARTS
+					HandlePart(material), if (material != Material.DUMMY) ModItemGroups.PARTS else null
 				))
 			}
 			

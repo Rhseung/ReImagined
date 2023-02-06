@@ -18,6 +18,6 @@ public abstract class MixinItemStack {
         at = @At("RETURN")
     )
     private boolean isBroken(boolean original, ItemStack stack) {
-        return (stack.getItem() instanceof IGearItem) ? GearHelper.broken(stack) : original;
+        return (stack.getItem() instanceof IGearItem) ? GearHelper.isBroken(stack) : original;
     }
 }

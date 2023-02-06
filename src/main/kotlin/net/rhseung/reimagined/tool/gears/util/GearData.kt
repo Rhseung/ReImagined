@@ -2,9 +2,6 @@ package net.rhseung.reimagined.tool.gears.util
 
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtElement
-import net.minecraft.nbt.NbtFloat
-import net.minecraft.nbt.NbtString
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.parts.base.IPartItem
@@ -14,7 +11,7 @@ import net.rhseung.reimagined.utils.Name.toPathName
 object GearData {
 	val NBT_ROOT = "Gear_Data"
 	val NBT_ROOT_STATS = "Stats"
-	val NBT_ROOT_CONSTRUCTION = "Construction"
+	val NBT_ROOT_PARTS = "Parts"
 	
 	val DUMMY_ELEMENT = 0
 	
@@ -71,7 +68,7 @@ object GearData {
 		stack: ItemStack,
 		partType: PartType
 	) {
-		val root = getData(stack, NBT_ROOT_CONSTRUCTION)
+		val root = getData(stack, NBT_ROOT_PARTS)
 		val compoundKey = partType.name.toPathName()
 		
 		if (!root.contains(compoundKey)) {
@@ -83,7 +80,7 @@ object GearData {
 		root: NbtCompound,
 		partType: PartType
 	) {
-		val root = root.getCompound(NBT_ROOT_CONSTRUCTION)
+		val root = root.getCompound(NBT_ROOT_PARTS)
 		val compoundKey = partType.name.toPathName()
 		
 		if (!root.contains(compoundKey)) {
@@ -95,7 +92,7 @@ object GearData {
 		stack: ItemStack,
 		vararg parts: IPartItem
 	) {
-		val root = getData(stack, NBT_ROOT_CONSTRUCTION)
+		val root = getData(stack, NBT_ROOT_PARTS)
 		
 		for (part in parts) {
 			val compoundKey = part.getType().name.toPathName()
