@@ -5,7 +5,7 @@ import net.rhseung.reimagined.tool.parts.enums.PartType
 
 interface IMiningGearItem : IGearItem {
 	override val includeStats: List<Stat>
-		get() = listOf(
+		get() = listOf<Stat>(
 			Stat.ATTACK_DAMAGE,
 			Stat.ATTACK_SPEED,
 			Stat.MINING_SPEED,
@@ -15,7 +15,7 @@ interface IMiningGearItem : IGearItem {
 		)
 	
 	override val includeParts: List<PartType>
-		get() = listOf(
+		get() = listOf<PartType>(
 			PartType.HANDLE,
 			// PartType.HEAD,
 			PartType.BINDING

@@ -4,27 +4,34 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.color.item.ItemColorProvider
+import net.minecraft.client.item.ModelPredicateProviderRegistry
+import net.minecraft.client.world.ClientWorld
+import net.minecraft.entity.LivingEntity
+import net.minecraft.item.Item
+import net.minecraft.item.ItemConvertible
+import net.minecraft.item.ItemStack
 import net.minecraft.registry.Registries
+import net.minecraft.util.Identifier
+import net.rhseung.reimagined.registration.ModItems
 import net.rhseung.reimagined.tool.gears.base.IGearItem
-import net.rhseung.reimagined.tool.gears.util.GearHelper.getConstructions
+import net.rhseung.reimagined.utils.Color
+import net.rhseung.reimagined.utils.Texture.overrideTexture
+import net.rhseung.reimagined.utils.Texture.tintTexture
 
 @Environment(EnvType.CLIENT)
 object GearHelperClient {
 	
-	// todo: 텍스쳐 틴트
-	fun tint() {
-		Registries.ITEM.entrySet.forEach { (key, value) ->
-			if (value is IGearItem) {
-				ColorProviderRegistry.ITEM.register(ItemColorProvider { stack, layerIndex ->
-					val parts = value.getConstructions(stack)
-					
-					parts[value.includeParts[layerIndex]]!!.material.color.toHex()
+	fun textureProcess() {
+		ModItems.GEARS.forEach { value ->
+			tintTexture({ stack, layerIndex ->
+				value.getConstructions(stack)[value.includeParts[layerIndex]]!!.material.color
+			}, value)
+			
+			if (value is Item) {
+				overrideTexture("broken", { stack, world, entity, seed ->
+					if (value.broken(stack)) 1 else 0
 				}, value)
 			}
 		}
 	}
-	
-	// todo: 텍스쳐 오버라이딩
-	
-	
 }

@@ -22,45 +22,45 @@ enum class Material(
 	/** for not vanilla materials */
 	val worldSpawn: Boolean = false
 ) {
-	Dummy(
+	DUMMY(
 		color = Color.WHITE, stat = -1, weight = -1, isMetal = false,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.CHAIN)
 	),
-	Wood( /** durability: 32 */
+	WOOD( /** durability: 32 */
 		color = Color(150, 116, 65), stat = 0, weight = 1, isMetal = false,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.OAK_PLANKS)
 	),
-	Stone( /** durability: 88 */
+	STONE( /** durability: 88 */
 		color = Color(149, 145, 141), stat = 1, weight = 2, isMetal = false,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.COBBLESTONE)
 	),
-	Copper( /** durability: 263 */
+	COPPER( /** durability: 263 */
 		color = Color(202, 118, 91), stat = 2, weight = 4,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.COPPER_INGOT)
 	),
-	Iron( /** durability: 534 */
+	IRON( /** durability: 534 */
 		color = Color(215, 215, 215), stat = 3, weight = 5,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.IRON_INGOT)
 	),
-	Diamond( /** durability: 864 */
+	DIAMOND( /** durability: 864 */
 		color = Color(43, 199, 172), stat = 4, weight = 3,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.DIAMOND)
 	),  // todofar: 다이아몬드는 보석류이므로 나중에 없앨거임
 	//      - 강철로 할 것 같음
 	//      - 용광로(->합금제조기)랑 훈연기(->코크오븐) 오버라이딩해서 만들 예정
-	Netherite( /** durability: 1501 */
+	NETHERITE( /** durability: 1501 */
 		color = Color(134, 123, 134), stat = 5, weight = 5, trait = Trait.Fireproof,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.NETHERITE_INGOT)
 	);
 	
-	fun getStat(s: Stat): Number {
+	fun getStat(s: Stat): Float {
 		return when (s) {
 			Stat.DURABILITY -> if (stat == -1) s.defaultValue else getDurability()
 			Stat.ATTACK_DAMAGE -> if (stat == -1) s.defaultValue else getAttackDamage()
@@ -72,12 +72,12 @@ enum class Material(
 		}
 	}
 	
-	fun getDurability() = (24 * stat.toFloat().pow(2.5F) + 32 * weight).toInt()
+	fun getDurability() = (24 * stat.toFloat().pow(2.5F) + 32 * weight).toInt().toFloat()
 	fun getAttackDamage() = 0.6F * stat + 0.1F * weight
-	fun getAttackSpeed() = 1.6F - 0.6F * weight
-	fun getMiningTier() = stat
+	fun getAttackSpeed() = -0.1F * (weight - 3)
+	fun getMiningTier() = stat.toFloat()
 	fun getMiningSpeed() = 1 + 2 * stat - 0.4F * weight
-	fun getEnchantability() = min(7 + 3*((stat + weight) % 5) - (0.2F * weight).toInt(), 25)
+	fun getEnchantability() = min(7 + 3*((stat + weight) % 5) - (0.2F * weight).toInt(), 25).toFloat()
 	// todofar: 다른 스탯 공식도 만들기
 	
 	/** note:
@@ -91,15 +91,21 @@ enum class Material(
 	 */
 	
 	companion object {
-		fun getColor(stat: Int) = when (stat) {
-			0 -> Wood.color
-			1 -> Stone.color
-            2 -> Copper.color
-			3 -> Iron.color
-            4 -> Diamond.color
-			5 -> Netherite.color
-			else -> Color.WHITE
+		val MAX_TIER = 5
+		
+		fun get(stat: Int) = when (stat) {
+			0 -> WOOD
+			1 -> STONE
+			2 -> COPPER
+			3 -> IRON
+			4 -> DIAMOND
+			5 -> NETHERITE
+			else -> DUMMY
 			// todofar: 다른 material도 지원하기
+		}
+		
+		fun getColor(stat: Int): Color {
+			return get(stat).color
 		}
 	}
 }

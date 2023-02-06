@@ -22,7 +22,7 @@ enum class PartType {
 	
 	companion object {
 		fun HEAD(gearType: GearType): PartType = when (gearType) {
-			GearType.Pickaxe -> PICKAXE_HEAD
+			GearType.PICKAXE -> PICKAXE_HEAD
 		}
 	}
 }

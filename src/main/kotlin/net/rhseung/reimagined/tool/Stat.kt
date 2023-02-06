@@ -12,12 +12,12 @@ import net.rhseung.reimagined.utils.Tooltip.point
 import net.rhseung.reimagined.utils.Tooltip.textf
 
 enum class Stat constructor(
-	val defaultValue: Number,
+	val defaultValue: Float,
 	val color: (ItemStack) -> Color,
 	
 	val isInt: Boolean = false
 ) {
-	DURABILITY(1, { stack ->
+	DURABILITY(1.0F, { stack ->
 		Color.DARK_GREEN.gradient(Color.DARK_RED, getRatioDurability(stack))
 	}, isInt = true),
 	ATTACK_DAMAGE(0F, { stack ->
@@ -26,13 +26,13 @@ enum class Stat constructor(
 	ATTACK_SPEED(1.0F, { stack ->
 		Color.SMOOTH_VIOLET
 	}),
-	MINING_TIER(0, { stack ->
+	MINING_TIER(0.0F, { stack ->
 		getColor(getMiningTier(stack))
 	}, isInt = true),
 	MINING_SPEED(1.0F, { stack ->
 		Color.SMOOTH_BLUE
 	}),
-	ENCHANTABILITY(10, { stack ->
+	ENCHANTABILITY(10.0F, { stack ->
 		Color.GOLD
 	}, isInt = true);
 	// todofar: 다른 스탯도 추가하기
@@ -43,7 +43,7 @@ enum class Stat constructor(
 	): MutableText {
 		return textf(
 			"{${name.toDisplayName()}:} " +
-					"{${if (isInt) getStat(stack, this).toInt() else point(getStat(stack, this).toFloat())}}",
+					"{${if (isInt) getStat(stack, this).toInt() else point(getStat(stack, this))}}",
 			colorOfStatName, color(stack)
 		)
 		// todofar: Text.translatable

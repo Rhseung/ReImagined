@@ -1,12 +1,13 @@
 package net.rhseung.reimagined.tool.gears.base
 
+import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.gears.enums.GearType
 import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 
-interface IGearItem {
+interface IGearItem : ItemConvertible {
 	val includeStats: List<Stat>
 	val includeParts: List<PartType>
 	

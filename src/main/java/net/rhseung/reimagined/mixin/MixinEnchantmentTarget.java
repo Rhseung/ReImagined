@@ -6,6 +6,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.MiningToolItem;
 import net.rhseung.reimagined.tool.gears.PickaxeGear;
+import net.rhseung.reimagined.tool.gears.base.IMiningGearItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -34,7 +35,6 @@ public abstract class MixinEnchantmentTarget {
             at = @At("RETURN")
     )
     private boolean diggerEnchantmentExpand(boolean original, Item item) {
-        return original || item instanceof PickaxeGear;
-        // todo: IGearItem을 상속받는 IMiningGearItem을 만들어서 그걸로 `item instanceof IMiningGearItem` 하자
+        return original || item instanceof IMiningGearItem;
     }
 }

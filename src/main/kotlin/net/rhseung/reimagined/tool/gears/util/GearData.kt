@@ -2,8 +2,12 @@ package net.rhseung.reimagined.tool.gears.util
 
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.nbt.NbtElement
+import net.minecraft.nbt.NbtFloat
+import net.minecraft.nbt.NbtString
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
+import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Name.toPathName
 
@@ -20,8 +24,9 @@ object GearData {
 	): NbtCompound {
 		val root = stack.getOrCreateSubNbt(NBT_ROOT)
 		
-		if (!root.contains(compoundKey))
-			root.put(compoundKey, null)
+		if (!root.contains(compoundKey)) {
+			root.put(compoundKey, NbtCompound())
+		}
 		
 		return root.getCompound(compoundKey)
 	}
@@ -34,10 +39,7 @@ object GearData {
 		val compoundKey = stat.name.toPathName()
 		
 		if (!root.contains(compoundKey)) {
-			when {
-				stat.isInt -> root.putInt(compoundKey, stat.defaultValue as Int)
-				!stat.isInt -> root.putFloat(compoundKey, stat.defaultValue as Float)
-			}
+			root.putFloat(compoundKey, stat.defaultValue)
 		}
 	}
 	
@@ -49,14 +51,23 @@ object GearData {
 		val compoundKey = stat.name.toPathName()
 		
 		if (!root.contains(compoundKey)) {
-			when {
-				stat.isInt -> root.putInt(compoundKey, stat.defaultValue as Int)
-				!stat.isInt -> root.putFloat(compoundKey, stat.defaultValue as Float)
-			}
+			root.putFloat(compoundKey, stat.defaultValue)
 		}
 	}
 	
-	fun putConstructionIfMissing(
+	fun writeStats(
+		stack: ItemStack,
+		vararg stats: Pair<Stat, Float>
+	) {
+		val root = getData(stack, NBT_ROOT_STATS)
+		
+		for ((stat, value) in stats) {
+			val compoundKey = stat.name.toPathName()
+			root.putFloat(compoundKey, value)
+		}
+	}
+	
+	fun putPartIfMissing(
 		stack: ItemStack,
 		partType: PartType
 	) {
@@ -64,11 +75,11 @@ object GearData {
 		val compoundKey = partType.name.toPathName()
 		
 		if (!root.contains(compoundKey)) {
-			root.putString(compoundKey, Material.Dummy.name.toPathName())
+			root.putString(compoundKey, Material.DUMMY.name.toPathName())
 		}
 	}
 	
-	fun putConstructionIfMissing(
+	fun putPartIfMissing(
 		root: NbtCompound,
 		partType: PartType
 	) {
@@ -76,7 +87,19 @@ object GearData {
 		val compoundKey = partType.name.toPathName()
 		
 		if (!root.contains(compoundKey)) {
-			root.putString(compoundKey, Material.Dummy.name.toPathName())
+			root.putString(compoundKey, Material.DUMMY.name.toPathName())
+		}
+	}
+	
+	fun writeParts(
+		stack: ItemStack,
+		vararg parts: IPartItem
+	) {
+		val root = getData(stack, NBT_ROOT_CONSTRUCTION)
+		
+		for (part in parts) {
+			val compoundKey = part.getType().name.toPathName()
+			root.putString(compoundKey, part.material.name.toPathName())
 		}
 	}
 }
