@@ -32,6 +32,9 @@
 				"value": "net.rhseung.reimagined.datagen.DataGenerator",
 				"adapter": "kotlin"
 			}
+		],
+		"preLaunch": [
+			"com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
 		]
 	},
 	"mixins": [

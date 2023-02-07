@@ -34,7 +34,7 @@ public class MixinEnchantmentTarget {
         method = "isAcceptableItem(Lnet/minecraft/item/Item;)Z",
         at = @At("RETURN")
     )
-    private boolean diggerEnchantmentExpand(boolean original, Item item) {
+    private boolean modifyDiggerEnchantmentTarget(boolean original, Item item) {
         return original || item instanceof IMiningGearItem;
     }
 

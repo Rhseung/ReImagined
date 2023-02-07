@@ -25,7 +25,7 @@ import net.rhseung.reimagined.tool.gears.util.GearHelper
 import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 
-class PickaxeGear : Item(Settings()), IMiningGearItem, Vanishable { // todo: trait 적용
+class PickaxeGear : Item(Settings().maxDamageIfAbsent(-1)), IMiningGearItem, Vanishable { // todo: trait 적용
 	override val includeStats = PickaxeGear.includeStats
 	override val includeParts = PickaxeGear.includeParts
 	override val effectiveBlocks = PickaxeGear.effectiveBlocks
