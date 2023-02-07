@@ -6,14 +6,12 @@ import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
-import net.rhseung.reimagined.utils.Name.toPathName
+import net.rhseung.reimagined.utils.Name.pathName
 
 object GearData {
 	val NBT_ROOT = "Gear_Data"
 	val NBT_ROOT_STATS = "Stats"
 	val NBT_ROOT_PARTS = "Parts"
-	
-	val DUMMY_ELEMENT = 0
 	
 	fun getData(
 		stack: ItemStack,
@@ -33,7 +31,7 @@ object GearData {
 		stat: Stat
 	) {
 		val root = getData(stack, NBT_ROOT_STATS)
-		val compoundKey = stat.name.toPathName()
+		val compoundKey = stat.name.pathName()
 		
 		if (!root.contains(compoundKey)) {
 			root.putFloat(compoundKey, stat.defaultValue)
@@ -41,11 +39,11 @@ object GearData {
 	}
 	
 	fun putStatIfMissing(
-		root: NbtCompound,
+		rootInput: NbtCompound,
 		stat: Stat
 	) {
-		val root = root.getCompound(NBT_ROOT_STATS)
-		val compoundKey = stat.name.toPathName()
+		val root = rootInput.getCompound(NBT_ROOT_STATS)
+		val compoundKey = stat.name.pathName()
 		
 		if (!root.contains(compoundKey)) {
 			root.putFloat(compoundKey, stat.defaultValue)
@@ -59,7 +57,7 @@ object GearData {
 		val root = getData(stack, NBT_ROOT_STATS)
 		
 		for ((stat, value) in stats) {
-			val compoundKey = stat.name.toPathName()
+			val compoundKey = stat.name.pathName()
 			root.putFloat(compoundKey, value)
 		}
 	}
@@ -69,22 +67,22 @@ object GearData {
 		partType: PartType
 	) {
 		val root = getData(stack, NBT_ROOT_PARTS)
-		val compoundKey = partType.name.toPathName()
+		val compoundKey = partType.name.pathName()
 		
 		if (!root.contains(compoundKey)) {
-			root.putString(compoundKey, Material.DUMMY.name.toPathName())
+			root.putString(compoundKey, Material.DUMMY.name.pathName())
 		}
 	}
 	
 	fun putPartIfMissing(
-		root: NbtCompound,
+		rootInput: NbtCompound,
 		partType: PartType
 	) {
-		val root = root.getCompound(NBT_ROOT_PARTS)
-		val compoundKey = partType.name.toPathName()
+		val root = rootInput.getCompound(NBT_ROOT_PARTS)
+		val compoundKey = partType.name.pathName()
 		
 		if (!root.contains(compoundKey)) {
-			root.putString(compoundKey, Material.DUMMY.name.toPathName())
+			root.putString(compoundKey, Material.DUMMY.name.pathName())
 		}
 	}
 	
@@ -95,8 +93,28 @@ object GearData {
 		val root = getData(stack, NBT_ROOT_PARTS)
 		
 		for (part in parts) {
-			val compoundKey = part.getType().name.toPathName()
-			root.putString(compoundKey, part.material.name.toPathName())
+			val compoundKey = part.getType().name.pathName()
+			root.putString(compoundKey, part.material.name.pathName())
+		}
+	}
+	
+	fun recalculate(
+		output: ItemStack,
+		includeStats: List<Stat>,
+		vararg parts: IPartItem
+	) {
+		for (stat in includeStats) {
+			var count = 0
+			var value = 0.0F
+			
+			for (part in parts) {
+				if (part.includeStats.contains(stat)) {
+					count++
+					value += part.getStat(stat)
+				}
+			}
+			
+			writeStats(output, stat to (value / count))
 		}
 	}
 }

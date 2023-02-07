@@ -4,8 +4,8 @@ import net.minecraft.item.Items
 import net.minecraft.recipe.Ingredient
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Color
+import net.rhseung.reimagined.utils.Math.pow
 import java.lang.Integer.min
-import kotlin.math.pow
 
 enum class Material(
 	val color: Color,
@@ -37,24 +37,24 @@ enum class Material(
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.COBBLESTONE)
 	),
-	COPPER( /** durability: 263 */
+	COPPER( /** durability: 320 */
 		color = Color(202, 118, 91), stat = 2, weight = 4,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.COPPER_INGOT)
 	),
-	IRON( /** durability: 534 */
+	IRON( /** durability: 808 */
 		color = Color(215, 215, 215), stat = 3, weight = 5,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.IRON_INGOT)
 	),
-	DIAMOND( /** durability: 864 */
+	DIAMOND( /** durability: 1632 */
 		color = Color(43, 199, 172), stat = 4, weight = 3,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.DIAMOND)
 	),  // todofar: 다이아몬드는 보석류이므로 나중에 없앨거임
 	//      - 강철로 할 것 같음
 	//      - 용광로(->합금제조기)랑 훈연기(->코크오븐) 오버라이딩해서 만들 예정
-	NETHERITE( /** durability: 1501 */
+	NETHERITE( /** durability: 3160 */
 		color = Color(134, 123, 134), stat = 5, weight = 5, trait = Trait.Fireproof,
 		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.NETHERITE_INGOT)
@@ -72,11 +72,11 @@ enum class Material(
 		}
 	}
 	
-	fun getDurability() = (24 * stat.toFloat().pow(2.5F) + 32 * weight).toInt().toFloat()
-	fun getAttackDamage() = 0.6F * stat + 0.1F * weight
+	fun getDurability() = (24 * stat.pow(3) + 32 * weight).toFloat()
+	fun getAttackDamage() = 1.0F * stat + 0.2F * weight
 	fun getAttackSpeed() = -0.1F * (weight - 3)
 	fun getMiningTier() = stat.toFloat()
-	fun getMiningSpeed() = 1 + 2 * stat - 0.4F * weight
+	fun getMiningSpeed() = 2 + 2.5F * stat - 0.3F * weight
 	fun getEnchantability() = min(7 + 3*((stat + weight) % 5) - (0.2F * weight).toInt(), 25).toFloat()
 	// todofar: 다른 스탯 공식도 만들기
 	
@@ -93,7 +93,7 @@ enum class Material(
 	companion object {
 		val MAX_TIER = 5
 		
-		fun get(stat: Int) = when (stat) {
+		fun get(miningLevel: Int) = when (miningLevel) {
 			0 -> WOOD
 			1 -> STONE
 			2 -> COPPER
@@ -104,8 +104,8 @@ enum class Material(
 			// todofar: 다른 material도 지원하기
 		}
 		
-		fun getColor(stat: Int): Color {
-			return get(stat).color
+		fun getColor(miningLevel: Int): Color {
+			return get(miningLevel).color
 		}
 	}
 }

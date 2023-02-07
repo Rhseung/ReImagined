@@ -29,12 +29,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * $14: TRIDENT
  */
 @Mixin(targets = {"net/minecraft/enchantment/EnchantmentTarget$12"})
-public abstract class MixinEnchantmentTarget {
+public class MixinEnchantmentTarget {
     @ModifyReturnValue(
-            method = "isAcceptableItem(Lnet/minecraft/item/Item;)Z",
-            at = @At("RETURN")
+        method = "isAcceptableItem(Lnet/minecraft/item/Item;)Z",
+        at = @At("RETURN")
     )
     private boolean diggerEnchantmentExpand(boolean original, Item item) {
         return original || item instanceof IMiningGearItem;
     }
+
+//    @Inject(
+//        method = "isAcceptableItem(Lnet/minecraft/item/Item;)Z",
+//        at = @At("RETURN"),
+//        cancellable = true
+//    )
+//    private void diggerEnchantmentExpand(Item item, CallbackInfoReturnable<Boolean> cir) {
+//        cir.setReturnValue(cir.getReturnValue() || item instanceof IMiningGearItem);
+//    }
 }

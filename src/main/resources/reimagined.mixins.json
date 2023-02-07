@@ -4,8 +4,7 @@
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
 		"MixinEnchantability",
-		"MixinEnchantmentTarget",
-		"MixinItemStack"
+		"MixinEnchantmentTarget"
 	],
 	"injectors": {
 		"defaultRequire": 1

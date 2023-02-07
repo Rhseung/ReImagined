@@ -28,6 +28,7 @@ import net.minecraft.world.World
 import net.rhseung.reimagined.registration.ModBlockTags
 import net.rhseung.reimagined.registration.ModItems
 import net.rhseung.reimagined.tool.Material
+import net.rhseung.reimagined.tool.Material.Companion.getColor
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.gears.base.IGearItem
 import net.rhseung.reimagined.tool.gears.enums.GearType
@@ -37,7 +38,7 @@ import net.rhseung.reimagined.tool.gears.util.GearData.putStatIfMissing
 import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Color
-import net.rhseung.reimagined.utils.Name.toPathName
+import net.rhseung.reimagined.utils.Name.pathName
 import net.rhseung.reimagined.utils.Sound
 import net.rhseung.reimagined.utils.Tooltip.textf
 import java.util.*
@@ -48,7 +49,7 @@ object GearHelper {
 	private const val BROKEN_MINING_SPEED = 0.0F
 	private const val BROKEN_ATTACK_DAMAGE = 0.0F
 	
-//	private val ATTACK_DAMAGE_MODIFIER_ID: UUID = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF")
+	//	private val ATTACK_DAMAGE_MODIFIER_ID: UUID = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF")
 //	private val ATTACK_SPEED_MODIFIER_ID: UUID = UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3")
 	private val REACH_DISTANCE_MODIFIER_ID: UUID = UUID.fromString("5879BECA-71AF-4D6A-9B2D-B59EF091B395")
 	
@@ -60,12 +61,12 @@ object GearHelper {
 	 */
 	fun getStat(
 		stack: ItemStack,
-		stat: Stat
+		stat: Stat,
 	): Float {
 		val statCompound = GearData.getData(stack, GearData.NBT_ROOT_STATS)
 		
-		if (statCompound.contains(stat.name.toPathName())) {
-			return statCompound.getFloat(stat.name.toPathName())
+		if (statCompound.contains(stat.name.pathName())) {
+			return statCompound.getFloat(stat.name.pathName())
 		} else {
 			putStatIfMissing(stack, stat)
 		}
@@ -76,13 +77,13 @@ object GearHelper {
 	fun getPart(
 		stack: ItemStack,
 		partType: PartType,
-		partCompoundInput: NbtCompound? = null
+		partCompoundInput: NbtCompound? = null,
 	): IPartItem {
 		val partCompound = partCompoundInput ?: GearData.getData(stack, GearData.NBT_ROOT_PARTS)
 		
-		if (partCompound.contains(partType.name.toPathName())) {
-			val materialName = partCompound.getString(partType.name.toPathName())
-			return ModItems.PARTS[partType]!!.find { it.material.name.toPathName() == materialName }!!
+		if (partCompound.contains(partType.name.pathName())) {
+			val materialName = partCompound.getString(partType.name.pathName())
+			return ModItems.PARTS[partType]!!.find { it.material.name.pathName() == materialName }!!
 		} else {
 			putPartIfMissing(stack, partType)
 		}
@@ -92,7 +93,7 @@ object GearHelper {
 	
 	fun getParts(
 		stack: ItemStack,
-		includeParts: List<PartType>
+		includeParts: List<PartType>,
 	): Map<PartType, IPartItem> {
 		val parts = mutableMapOf<PartType, IPartItem>()
 		val partCompound = GearData.getData(stack, GearData.NBT_ROOT_PARTS)
@@ -108,7 +109,7 @@ object GearHelper {
 	 * gets the gear stats
 	 */
 	fun getMiningTier(
-		stack: ItemStack
+		stack: ItemStack,
 	): Int {
 		return getStat(stack, Stat.MINING_TIER).toInt()
 	}
@@ -116,7 +117,7 @@ object GearHelper {
 	fun getMiningSpeed(
 		stack: ItemStack,
 		state: BlockState,
-		effectiveBlocks: TagKey<Block>
+		effectiveBlocks: TagKey<Block>,
 	): Float {
 		return if (isBroken(stack)) BROKEN_MINING_SPEED
 		else if (state.isIn(effectiveBlocks)) getStat(stack, Stat.MINING_SPEED)
@@ -124,50 +125,50 @@ object GearHelper {
 	}
 	
 	fun getAttackDamage(
-		stack: ItemStack
+		stack: ItemStack,
 	): Float {
 		return if (isBroken(stack)) BROKEN_ATTACK_DAMAGE
 		else getStat(stack, Stat.ATTACK_DAMAGE)
 	}
 	
 	fun getAttackSpeed(
-		stack: ItemStack
+		stack: ItemStack,
 	): Float {
 		return getStat(stack, Stat.ATTACK_SPEED)
 	}
 	
 	fun getEnchantability(
-		stack: ItemStack
+		stack: ItemStack,
 	): Int {
 		return getStat(stack, Stat.ENCHANTABILITY).toInt()
 	}
 	
 	fun getUsedDurability(
-		stack: ItemStack
+		stack: ItemStack,
 	): Int {
 		return stack.damage
 	}
 	
 	fun getRemainDurability(
-		stack: ItemStack
+		stack: ItemStack,
 	): Int {
 		return getMaxDurability(stack) - getUsedDurability(stack)
 	}
 	
 	fun getMaxDurability(
-		stack: ItemStack
+		stack: ItemStack,
 	): Int {
 		return getStat(stack, Stat.DURABILITY).toInt() - 1
 	}
 	
 	fun getRemainDurabilityRatio(
-		stack: ItemStack
+		stack: ItemStack,
 	): Float {
 		return getRemainDurability(stack).toFloat() / getMaxDurability(stack).toFloat()
 	}
 	
 	fun getUsedDurabilityRatio(
-		stack: ItemStack
+		stack: ItemStack,
 	): Float {
 		return getUsedDurability(stack).toFloat() / getMaxDurability(stack).toFloat()
 	}
@@ -179,7 +180,7 @@ object GearHelper {
 		stack: ItemStack,
 		slot: EquipmentSlot,
 		attackDamageModifierId: UUID,
-		attackSpeedModifierId: UUID
+		attackSpeedModifierId: UUID,
 	): Multimap<EntityAttribute, EntityAttributeModifier> {
 		val builder = ImmutableMultimap.builder<EntityAttribute, EntityAttributeModifier>()
 		
@@ -220,7 +221,7 @@ object GearHelper {
 		stack: ItemStack,
 		amountInput: Int,
 		random: Random,
-		player: ServerPlayerEntity?
+		player: ServerPlayerEntity?,
 	): Boolean {
 		var amount = amountInput
 		val unbreakingLevel = EnchantmentHelper.getLevel(Enchantments.UNBREAKING, stack)
@@ -257,7 +258,7 @@ object GearHelper {
 		stack: ItemStack,
 		amount: Int,
 		entity: T,
-		breakCallback: Consumer<T>
+		breakCallback: Consumer<T>,
 	) {
 		if (!entity.world.isClient && (entity !is PlayerEntity || !(entity as PlayerEntity).abilities.creativeMode)) {
 			if (damage(stack, amount, entity.random, if (entity is ServerPlayerEntity) entity else null)) {
@@ -270,7 +271,7 @@ object GearHelper {
 	fun postProcessNbt(
 		nbt: NbtCompound,
 		includeStats: List<Stat>,
-		includeParts: List<PartType>
+		includeParts: List<PartType>,
 	) {
 		val root = nbt.getCompound(NBT_ROOT)
 		
@@ -283,7 +284,7 @@ object GearHelper {
 		world: World?,
 		tooltip: MutableList<Text>,
 		context: TooltipContext,
-		includeStats: List<Stat>
+		includeStats: List<Stat>,
 	) {
 		tooltip.add(
 			textf(
@@ -294,9 +295,15 @@ object GearHelper {
 				Color.DARK_GREEN
 			)
 		)
+		
 		for (stat in includeStats) {
 			if (stat == Stat.DURABILITY) continue
-			tooltip.add(stat.getDisplayText(stack))
+			
+			if (stat == Stat.MINING_TIER) tooltip.add(stat.getDisplayTextUsingNBT(
+				stack,
+				colorOfStatValue = { getColor(getMiningTier(it)) }
+			))
+			else tooltip.add(stat.getDisplayTextUsingNBT(stack))
 		}
 		// todofar: Mining Tier는 알파벳으로 써주는게 좋음
 		// todofar: translatable text
@@ -308,7 +315,7 @@ object GearHelper {
 	fun onAttack(
 		stack: ItemStack,
 		target: LivingEntity,
-		attacker: LivingEntity
+		attacker: LivingEntity,
 	): Boolean {
 		if (isNotBroken(stack)) {
 			damage(stack, 1, attacker) { e ->
@@ -327,7 +334,7 @@ object GearHelper {
 		world: World,
 		state: BlockState,
 		pos: BlockPos,
-		miner: LivingEntity
+		miner: LivingEntity,
 	): Boolean {
 		if (isNotBroken(stack)) {
 			if (!world.isClient && state.getHardness(world, pos) != 0.0F) {
@@ -345,7 +352,7 @@ object GearHelper {
 	
 	fun onBroken(
 		stack: ItemStack,
-		player: LivingEntity
+		player: LivingEntity,
 	) {
 		Sound.play(player, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS)
 		// todofar: 부서질 때 파티클까지 튀기 (안해도 됨)
@@ -356,7 +363,7 @@ object GearHelper {
 		world: World,
 		player: PlayerEntity,
 		needParts: List<PartType> = emptyList(),
-		needStats: List<Stat> = emptyList()
+		needStats: List<Stat> = emptyList(),
 	) {
 		// note: 제작 시 `player.world`로 제작 효과음 재생할 수 있음
 		Sound.play(player, SoundEvents.UI_STONECUTTER_TAKE_RESULT, SoundCategory.PLAYERS)
@@ -372,16 +379,15 @@ object GearHelper {
 		stack: ItemStack,
 		ingredient: ItemStack,
 		includeParts: List<PartType>,
-		gearType: GearType
+		gearType: GearType,
 	): Boolean {
-		return if (isNotGear(stack)) false
-		else getParts(stack, includeParts)[PartType.HEAD(gearType)]!!.material.repairIngredient.test(ingredient)
+		return getPart(stack, PartType.PICKAXE_HEAD).material.repairIngredient.test(ingredient)
 	}
 	
 	fun isSuitableFor(
 		stack: ItemStack,
 		state: BlockState,
-		effectiveBlocks: TagKey<Block>
+		effectiveBlocks: TagKey<Block>,
 	): Boolean {
 		val tier = getMiningTier(stack)
 		
@@ -392,33 +398,33 @@ object GearHelper {
 	
 	@JvmStatic
 	fun isBroken(
-		stack: ItemStack
+		stack: ItemStack,
 	): Boolean {
 		return getRemainDurability(stack) <= 0
 	}
 	
 	@JvmStatic
 	fun isNotBroken(
-		stack: ItemStack
+		stack: ItemStack,
 	): Boolean {
 		return !isBroken(stack)
 	}
 	
 	@JvmStatic
 	fun isGear(
-		stack: ItemStack
+		stack: ItemStack,
 	): Boolean {
 		return stack.item is IGearItem
 	}
 	
 	fun isNotGear(
-		stack: ItemStack
+		stack: ItemStack,
 	): Boolean {
 		return !isGear(stack)
 	}
 	
 	fun isEnchantable(
-		stack: ItemStack
+		stack: ItemStack,
 	): Boolean {
 		return isNotBroken(stack)
 	}
@@ -427,20 +433,20 @@ object GearHelper {
 	 * item bar functions
 	 */
 	fun getItemBarStep(
-		stack: ItemStack
+		stack: ItemStack,
 	): Int {
 		return (13.0F - 13.0F * getUsedDurabilityRatio(stack)).roundToInt()
 	}
 	
 	fun getItemBarColor(
-		stack: ItemStack
+		stack: ItemStack,
 	): Int {
 		// todofar: unique bar color?
 		return Color.GREEN.gradient(Color.RED, getRemainDurabilityRatio(stack)).toHex()
 	}
 	
 	fun isItemBarVisible(
-		stack: ItemStack
+		stack: ItemStack,
 	): Boolean {
 		return getUsedDurability(stack) > 0
 	}

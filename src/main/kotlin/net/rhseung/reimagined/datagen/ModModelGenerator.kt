@@ -10,8 +10,8 @@ import net.rhseung.reimagined.ReImagined
 import net.rhseung.reimagined.registration.ModItems
 import net.rhseung.reimagined.tool.gears.base.IGearItem
 import net.rhseung.reimagined.tool.parts.base.IPartItem
-import net.rhseung.reimagined.utils.Name.toPathName
-import java.util.*
+import net.rhseung.reimagined.utils.Name.pathName
+import net.rhseung.reimagined.utils.Texture
 
 class ModModelGenerator(output: FabricDataOutput) : FabricModelProvider(output) {
 	override fun generateBlockStateModels(blockStateModelGenerator: BlockStateModelGenerator) {
@@ -22,23 +22,47 @@ class ModModelGenerator(output: FabricDataOutput) : FabricModelProvider(output) 
 		ModItems.GEARS.forEach { itemModelGenerator.generateGear(it) }
 	}
 	
-	private fun <T : Item> ItemModelGenerator.generate(item: T, vararg texturePath: String) {
+	private fun <T : Item> ItemModelGenerator.generate(
+		item: T,
+		vararg texturePath: String,
+		makeBrokenTexture: Boolean = false,
+		overrides: List<Texture.OverrideTexture> = listOf(),
+	) {
 		val id = Registries.ITEM.getId(item).withPrefixedPath("item/")
-		val model = Model(Optional.of(Identifier("minecraft", "item/generated")), Optional.empty())
-		val textureMap = TextureMap()
+		val textureMap = mutableMapOf<TextureKey, Identifier>()
 		
-		texturePath.forEachIndexed { index, path -> textureMap.register(
-			TextureKey.of("layer$index"),
-			Identifier(ReImagined.MOD_ID, "item/${path}")
-		) }
+		texturePath.forEachIndexed { index, path ->
+			textureMap[TextureKey.of("layer$index")] = Identifier(ReImagined.MOD_ID, "item/$path")
+		}
 		
-		model.upload(id, textureMap, this.writer)
+		// 파일 이름 정하기
+		val wholeOverrides = (if (!makeBrokenTexture) overrides else overrides + Texture.OverrideTexture(
+			"broken",
+			1
+		)).map { it.modelNameWithPrefix("${id.path.replaceFirst("item/", "")}_") }
+		
+		// 원래 json 업로드
+		Texture.upload(
+			id,
+			this.writer,
+			textureMap,
+			wholeOverrides
+		)
+		
+		// 오버라이드 업로드
+		wholeOverrides.forEach { override -> Texture.upload(
+			Identifier(ReImagined.MOD_ID, override.modelName).withPrefixedPath("item/"),
+			this.writer,
+			textureMap.mapValues { (key, value) ->
+					value.withPath { it + "_${override.id}" }
+			}
+		)}
 	}
 	
 	private fun ItemModelGenerator.generatePart(part: IPartItem) {
 		if (part !is Item) return
 		
-		this.generate(part, "parts/${part.getType().name.toPathName()}")
+		this.generate(part, "parts/${part.getType().name.pathName()}")
 	}
 	
 	private fun ItemModelGenerator.generateGear(gear: IGearItem) {
@@ -46,12 +70,15 @@ class ModModelGenerator(output: FabricDataOutput) : FabricModelProvider(output) 
 		
 		val texturePaths = mutableListOf<String>()
 		gear.includeParts.forEach { partType ->
-			// todo: crude texture
-			texturePaths.add("gear/${gear.getType().name.toPathName()}/${partType.name.split("_").last().toPathName()}")
+			texturePaths.add(
+				"gear/${gear.getType().name.pathName()}/" +
+						partType.name.split("_").last().pathName()
+			)
 		}
 		
-		this.generate(gear, *texturePaths.toTypedArray())
-		
-		// todo: override
+		this.generate(
+			gear, *texturePaths.toTypedArray(),
+			makeBrokenTexture = true
+		)
 	}
 }

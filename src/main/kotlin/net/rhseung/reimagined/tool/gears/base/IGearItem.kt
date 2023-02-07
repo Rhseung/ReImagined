@@ -28,6 +28,7 @@ interface IGearItem : ItemConvertible {
 	
 	fun getType(): GearType
 	fun getParts(stack: ItemStack): Map<PartType, IPartItem>
+	fun getPart(stack: ItemStack, partType: PartType): IPartItem
 	
 	fun getCurrentDurability(stack: ItemStack): Int
 	fun getMaxDurability(stack: ItemStack): Int
@@ -40,8 +41,8 @@ interface IGearItem : ItemConvertible {
 	
 	fun getMiningSpeedMultiplier(stack: ItemStack, state: BlockState): Float
 	
-	fun broken(stack: ItemStack): Boolean
-	fun notBroken(stack: ItemStack): Boolean
+	fun isBroken(stack: ItemStack): Boolean
+	fun isNotBroken(stack: ItemStack): Boolean
 	
 	fun getAttributeModifiers(stack: ItemStack, slot: EquipmentSlot): Multimap<EntityAttribute, EntityAttributeModifier>
 	

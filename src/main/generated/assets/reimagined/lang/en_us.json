@@ -1,4 +1,5 @@
 {
+  "item.reimagined.gear.pickaxe": "Pickaxe",
   "item.reimagined.parts.binding_copper": "Copper Binding Part",
   "item.reimagined.parts.binding_diamond": "Diamond Binding Part",
   "item.reimagined.parts.binding_dummy": "Dummy Binding Part",
@@ -17,6 +18,5 @@
   "item.reimagined.parts.pickaxe_head_iron": "Iron Pickaxe Head Part",
   "item.reimagined.parts.pickaxe_head_netherite": "Netherite Pickaxe Head Part",
   "item.reimagined.parts.pickaxe_head_stone": "Stone Pickaxe Head Part",
-  "item.reimagined.parts.pickaxe_head_wood": "Wood Pickaxe Head Part",
-  "item.reimagined.pickaxe": "Pickaxe"
+  "item.reimagined.parts.pickaxe_head_wood": "Wood Pickaxe Head Part"
 }

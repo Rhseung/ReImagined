@@ -17,7 +17,7 @@ import net.rhseung.reimagined.tool.parts.enums.PartType
 import kotlin.math.PI
 
 object ModItems {
-	val PICKAXE = registerItem("pickaxe", PickaxeGear())
+	val PICKAXE = registerItem("gear/pickaxe", PickaxeGear())
 	
 	val PICKAXE_HEAD_PARTS = PickaxeHeadPart.registerAll()
 	val BINDING_PARTS = BindingPart.registerAll()

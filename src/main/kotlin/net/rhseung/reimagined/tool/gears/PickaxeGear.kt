@@ -48,7 +48,7 @@ class PickaxeGear : Item(Settings()), IMiningGearItem, Vanishable { // todo: tra
 		
 		val effectiveBlocks: TagKey<Block> = BlockTags.PICKAXE_MINEABLE
 	}
-
+	
 	override fun getType(): GearType {
 		return GearType.PICKAXE
 	}
@@ -75,7 +75,7 @@ class PickaxeGear : Item(Settings()), IMiningGearItem, Vanishable { // todo: tra
 	
 	override fun getMiningSpeedMultiplier(
 		stack: ItemStack,
-		state: BlockState
+		state: BlockState,
 	): Float {
 		return GearHelper.getMiningSpeed(stack, state, effectiveBlocks)
 	}
@@ -83,19 +83,20 @@ class PickaxeGear : Item(Settings()), IMiningGearItem, Vanishable { // todo: tra
 	override fun onCraft(
 		stack: ItemStack,
 		world: World,
-		player: PlayerEntity
+		player: PlayerEntity,
 	) {
-		return GearHelper.onCraft(stack, world, player,
+		return GearHelper.onCraft(
+			stack, world, player,
 			needParts = includeParts,
 			needStats = includeStats
 		)
 	}
 	
-	override fun broken(stack: ItemStack): Boolean {
+	override fun isBroken(stack: ItemStack): Boolean {
 		return GearHelper.isBroken(stack)
 	}
 	
-	override fun notBroken(stack: ItemStack): Boolean {
+	override fun isNotBroken(stack: ItemStack): Boolean {
 		return GearHelper.isNotBroken(stack)
 	}
 	
@@ -104,16 +105,24 @@ class PickaxeGear : Item(Settings()), IMiningGearItem, Vanishable { // todo: tra
 	}
 	
 	override fun getParts(
-		stack: ItemStack
+		stack: ItemStack,
 	): Map<PartType, IPartItem> {
 		return GearHelper.getParts(stack, includeParts)
 	}
 	
+	override fun getPart(
+		stack: ItemStack,
+		partType: PartType
+	): IPartItem {
+		return GearHelper.getPart(stack, partType)
+	}
+	
 	override fun getAttributeModifiers(
 		stack: ItemStack,
-		slot: EquipmentSlot
+		slot: EquipmentSlot,
 	): Multimap<EntityAttribute, EntityAttributeModifier> {
-		return GearHelper.getAttributeModifiers(stack, slot,
+		return GearHelper.getAttributeModifiers(
+			stack, slot,
 			attackDamageModifierId = ATTACK_DAMAGE_MODIFIER_ID,
 			attackSpeedModifierId = ATTACK_SPEED_MODIFIER_ID
 		)
@@ -123,7 +132,7 @@ class PickaxeGear : Item(Settings()), IMiningGearItem, Vanishable { // todo: tra
 		stack: ItemStack,
 		world: World?,
 		tooltip: MutableList<Text>,
-		context: TooltipContext
+		context: TooltipContext,
 	) {
 		super.appendTooltip(stack, world, tooltip, context)
 		GearHelper.appendTooltip(stack, world, tooltip, context, includeStats)
@@ -131,7 +140,7 @@ class PickaxeGear : Item(Settings()), IMiningGearItem, Vanishable { // todo: tra
 	
 	override fun canRepair(
 		stack: ItemStack,
-		ingredient: ItemStack
+		ingredient: ItemStack,
 	): Boolean {
 		return GearHelper.canRepair(stack, ingredient, includeParts, getType())
 	}
@@ -147,7 +156,7 @@ class PickaxeGear : Item(Settings()), IMiningGearItem, Vanishable { // todo: tra
 	override fun postHit(
 		stack: ItemStack,
 		target: LivingEntity,
-		attacker: LivingEntity
+		attacker: LivingEntity,
 	): Boolean {
 		return GearHelper.onAttack(stack, target, attacker)
 	}
@@ -157,14 +166,14 @@ class PickaxeGear : Item(Settings()), IMiningGearItem, Vanishable { // todo: tra
 		world: World,
 		state: BlockState,
 		pos: BlockPos,
-		miner: LivingEntity
+		miner: LivingEntity,
 	): Boolean {
 		return GearHelper.onMine(stack, world, state, pos, miner)
 	}
 	
 	override fun isSuitableFor(
 		stack: ItemStack,
-		state: BlockState
+		state: BlockState,
 	): Boolean {
 		return GearHelper.isSuitableFor(stack, state, effectiveBlocks)
 	}

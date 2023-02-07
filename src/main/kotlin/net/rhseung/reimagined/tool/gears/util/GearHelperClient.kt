@@ -11,15 +11,15 @@ import net.rhseung.reimagined.utils.Texture.tintTexture
 object GearHelperClient {
 	
 	fun textureProcess() {
-		ModItems.GEARS.forEach { value ->
+		ModItems.GEARS.forEach { gear ->
 			tintTexture({ stack, layerIndex ->
-				value.getParts(stack)[value.includeParts[layerIndex]]!!.material.color
-			}, value)
+				gear.getParts(stack)[gear.includeParts[layerIndex]]!!.material.color
+			}, gear)
 			
-			if (value is Item) {
+			if (gear is Item) {
 				overrideTexture("broken", { stack, world, entity, seed ->
-					if (value.broken(stack)) 1 else 0
-				}, value)
+					if (gear.isBroken(stack)) 1 else 0
+				}, gear)
 			}
 		}
 	}

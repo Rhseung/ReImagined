@@ -69,12 +69,7 @@ class PickaxeGearRecipe constructor(
 		}
 		
 		GearData.writeParts(output, head!!, binding!!, handle!!)
-		
-		PickaxeGear.includeStats.forEach { stat ->
-			GearData.writeStats(output,
-				stat to average(head.getStat(stat), binding.getStat(stat), handle.getStat(stat)))
-		}
-		GearData.writeStats(output, Stat.MINING_TIER to head.getStat(Stat.MINING_TIER))
+		GearData.recalculate(output, PickaxeGear.includeStats, head, binding, handle)
 		
 		return output
 	}

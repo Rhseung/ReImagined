@@ -9,10 +9,10 @@ import net.rhseung.reimagined.registration.ModItemGroups
 import net.rhseung.reimagined.registration.ModItems
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
-import net.rhseung.reimagined.tool.gears.PickaxeGear
 import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
-import net.rhseung.reimagined.utils.Name.toPathName
+import net.rhseung.reimagined.tool.parts.util.PartHelper
+import net.rhseung.reimagined.utils.Name.pathName
 
 class PickaxeHeadPart constructor (
 	override val material: Material
@@ -20,6 +20,7 @@ class PickaxeHeadPart constructor (
 	
 	override val includeStats = listOf(
 		Stat.DURABILITY,
+		Stat.MINING_SPEED,
 		Stat.MINING_TIER,
 		Stat.ATTACK_DAMAGE
 	)
@@ -32,6 +33,19 @@ class PickaxeHeadPart constructor (
 		return material.getStat(stat)
 	}
 	
+	override fun isEnchantable(stack: ItemStack?): Boolean {
+		return false
+	}
+	
+	override fun appendTooltip(
+		stack: ItemStack,
+		world: World?,
+		tooltip: MutableList<Text>,
+		context: TooltipContext
+	) {
+		PartHelper.appendTooltip(stack, world, tooltip, context, includeStats, material)
+	}
+	
 	companion object {
 		fun registerAll(): List<PickaxeHeadPart> {
 			val ret = mutableListOf<PickaxeHeadPart>()
@@ -40,7 +54,7 @@ class PickaxeHeadPart constructor (
 				if (getType() !in material.canParts) continue
 				
 				ret.add(ModItems.registerItem(
-					"parts/${getType().name.toPathName()}_${material.name.toPathName()}",
+					"parts/${getType().name.pathName()}_${material.name.pathName()}",
 					PickaxeHeadPart(material), if (material != Material.DUMMY) ModItemGroups.PARTS else null
 				))
 			}

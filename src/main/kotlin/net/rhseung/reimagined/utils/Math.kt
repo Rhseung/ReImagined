@@ -16,4 +16,14 @@ object Math {
 	fun average(vararg numbers: Float): Float {
 		return sum(*numbers) / numbers.count()
 	}
+	
+	fun Int.pow(power: Int): Int {
+		var ret = 1
+		var exp = power
+		while (exp > 0) {
+			ret *= this
+			exp--
+		}
+		return ret
+	}
 }

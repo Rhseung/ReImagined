@@ -1,5 +1,13 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:item/handheld",
+  "overrides": [
+    {
+      "model": "reimagined:item/gear/pickaxe_broken",
+      "predicate": {
+        "broken": 1
+      }
+    }
+  ],
   "textures": {
     "layer0": "reimagined:item/gear/pickaxe/handle",
     "layer1": "reimagined:item/gear/pickaxe/head",

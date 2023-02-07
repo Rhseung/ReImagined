@@ -9,20 +9,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.rhseung.reimagined.tool.gears.util.GearHelper;
 
 @Mixin(EnchantmentHelper.class)
-public abstract class MixinEnchantability {
+public class MixinEnchantability {
 	@ModifyExpressionValue(
-			method = "generateEnchantments",
-			at = @At(value = "INVOKE", target = "net/minecraft/item/Item.getEnchantability ()I")
+		method = "generateEnchantments",
+		at = @At(value = "INVOKE", target = "net/minecraft/item/Item.getEnchantability ()I")
 	)
-	private static int mixinGetEnchantabilityInG(int original, ItemStack stack) {
-		return GearHelper.isGear(stack) ? ((IGearItem) stack.getItem()).getEnchantability(stack) : original;
+	private static int modifyEnchantabilityG(int original, ItemStack stack) {
+		return 0;//GearHelper.isGear(stack) ? ((IGearItem) stack.getItem()).getEnchantability(stack) : original;
 	}
 
 	@ModifyExpressionValue(
-			method = "calculateRequiredExperienceLevel",
-			at = @At(value = "INVOKE", target = "net/minecraft/item/Item.getEnchantability ()I")
+		method = "calculateRequiredExperienceLevel",
+		at = @At(value = "INVOKE", target = "net/minecraft/item/Item.getEnchantability ()I")
 	)
-	private static int mixinGetEnchantabilityInC(int original, ItemStack stack) {
-		return GearHelper.isGear(stack) ? ((IGearItem) stack.getItem()).getEnchantability(stack) : original;
+	private static int modifyEnchantabilityC(int original, ItemStack stack) {
+		return 0;//GearHelper.isGear(stack) ? ((IGearItem) stack.getItem()).getEnchantability(stack) : original;
 	}
 }
