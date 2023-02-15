@@ -17,18 +17,23 @@ import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.particle.ItemStackParticleEffect
+import net.minecraft.particle.ParticleTypes
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
+import net.minecraft.util.Hand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 import net.rhseung.reimagined.registration.ModBlockTags
 import net.rhseung.reimagined.registration.ModItems
 import net.rhseung.reimagined.tool.Material
-import net.rhseung.reimagined.tool.Material.Companion.getColor
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.gears.base.IGearItem
 import net.rhseung.reimagined.tool.gears.enums.GearType
@@ -38,9 +43,12 @@ import net.rhseung.reimagined.tool.gears.util.GearData.putStatIfMissing
 import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Color
-import net.rhseung.reimagined.utils.Name.pathName
+import net.rhseung.reimagined.utils.Color.Companion.gradient
 import net.rhseung.reimagined.utils.Sound
-import net.rhseung.reimagined.utils.Tooltip.textf
+import net.rhseung.reimagined.utils.Text.displayName
+import net.rhseung.reimagined.utils.Text.getEnchantmentFullName
+import net.rhseung.reimagined.utils.Text.pathName
+import net.rhseung.reimagined.utils.Tooltip.coloring
 import java.util.*
 import java.util.function.Consumer
 import kotlin.math.roundToInt
@@ -49,9 +57,8 @@ object GearHelper {
 	private const val BROKEN_MINING_SPEED = 0.0F
 	private const val BROKEN_ATTACK_DAMAGE = 0.0F
 	
-	//	private val ATTACK_DAMAGE_MODIFIER_ID: UUID = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF")
-//	private val ATTACK_SPEED_MODIFIER_ID: UUID = UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3")
 	private val REACH_DISTANCE_MODIFIER_ID: UUID = UUID.fromString("5879BECA-71AF-4D6A-9B2D-B59EF091B395")
+	private val MINING_SPEED_MODIFIER_ID: UUID = UUID.fromString("A0B5EBF0-D474-48CF-9997-54A21029F2D3")
 	
 	private const val TOOL_MODIFIER_NAME = "Tool modifier"
 	private const val WEAPON_MODIFIER_NAME = "Weapon modifier"
@@ -116,12 +123,20 @@ object GearHelper {
 	
 	fun getMiningSpeed(
 		stack: ItemStack,
-		state: BlockState,
-		effectiveBlocks: TagKey<Block>,
+		state: BlockState? = null,
+		effectiveBlocks: TagKey<Block>? = null,
+		getMax: Boolean = false,
 	): Float {
-		return if (isBroken(stack)) BROKEN_MINING_SPEED
-		else if (state.isIn(effectiveBlocks)) getStat(stack, Stat.MINING_SPEED)
-		else 1.0F
+		return if (getMax) {
+			// getMiningSpeed(stack, getMax = true)
+			getStat(stack, Stat.MINING_SPEED)
+		}
+		else {
+			// getMiningSpeed(stack, state, effectiveBlocks)
+			if (isBroken(stack)) BROKEN_MINING_SPEED
+			else if (state!!.isIn(effectiveBlocks!!)) getStat(stack, Stat.MINING_SPEED)
+			else 1.0F
+		}
 	}
 	
 	fun getAttackDamage(
@@ -181,6 +196,7 @@ object GearHelper {
 		slot: EquipmentSlot,
 		attackDamageModifierId: UUID,
 		attackSpeedModifierId: UUID,
+		type: GearType,
 	): Multimap<EntityAttribute, EntityAttributeModifier> {
 		val builder = ImmutableMultimap.builder<EntityAttribute, EntityAttributeModifier>()
 		
@@ -198,20 +214,28 @@ object GearHelper {
 				EntityAttributes.GENERIC_ATTACK_SPEED, EntityAttributeModifier(
 					attackSpeedModifierId,
 					TOOL_MODIFIER_NAME,
-					1.2 + getAttackSpeed(stack).toDouble() - 4.0,   // note: 1.2 = 곡괭이의 기본 속도
+					type.baseAttackSpeed + getAttackSpeed(stack).toDouble() - 4.0,
 					EntityAttributeModifier.Operation.ADDITION
 				)
 			)
 			
 			// todofar: reach distance attribute도 추가하기
 			// todofar: WEAPON_MODIFIER_NAME 사용
+			// todo: how to make custom attribute?
 		}
 		
 		return builder.build()
 	}
 	
-	fun getName(stack: ItemStack): Text {
-		return Text.translatable(stack.item.getTranslationKey(stack))
+	fun register(
+		id: String,
+		attribute: EntityAttribute,
+	): EntityAttribute {
+		return Registry.register(Registries.ATTRIBUTE, id, attribute) as EntityAttribute
+	}
+	
+	fun getName(stack: ItemStack, type: GearType): Text {
+		return Text.translatable(stack.item.getTranslationKey(stack), getPart(stack, PartType.HEAD(type)).material.name.displayName())
 	}
 	
 	/**
@@ -286,27 +310,25 @@ object GearHelper {
 		context: TooltipContext,
 		includeStats: List<Stat>,
 	) {
-		tooltip.add(
-			textf(
-				"{Durability:} {${getRemainDurability(stack)}}{/}{${getMaxDurability(stack)}}",
-				Color.GRAY,
-				Color.DARK_GREEN.gradient(Color.DARK_RED, getRemainDurabilityRatio(stack)),
-				Color.DARK_GRAY,
-				Color.DARK_GREEN
-			)
-		)
+		stack.addHideFlag(ItemStack.TooltipSection.MODIFIERS)
+		stack.addHideFlag(ItemStack.TooltipSection.ENCHANTMENTS)
 		
-		for (stat in includeStats) {
-			if (stat == Stat.DURABILITY) continue
-			
-			if (stat == Stat.MINING_TIER) tooltip.add(stat.getDisplayTextUsingNBT(
-				stack,
-				colorOfStatValue = { getColor(getMiningTier(it)) }
-			))
-			else tooltip.add(stat.getDisplayTextUsingNBT(stack))
+		val enchantments = EnchantmentHelper.get(stack)
+		
+		if (enchantments.isNotEmpty()) {
+			for ((enchantment, level) in enchantments) {
+				tooltip.add(
+					"  {-} {${getEnchantmentFullName(enchantment, level)}}".coloring(
+						Color.GRAY,
+						if (enchantment.isCursed) Color.DARK_RED
+						else if (enchantment.isTreasure) Color.DARK_PINK
+						else Color.DARK_GRAY
+					)
+				)
+			}
 		}
-		// todofar: Mining Tier는 알파벳으로 써주는게 좋음
-		// todofar: translatable text
+		// todo: Mining Tier는 알파벳으로 써주는게 좋음
+		// todo: translatable text
 	}
 	
 	/**
@@ -354,8 +376,15 @@ object GearHelper {
 		stack: ItemStack,
 		player: LivingEntity,
 	) {
-		Sound.play(player, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS)
-		// todofar: 부서질 때 파티클까지 튀기 (안해도 됨)
+		// note: item break sound
+		//Sound.play(player, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS)
+		
+		// todo: item break particle
+		// player.world.addParticle(ItemStackParticleEffect(ParticleTypes.ITEM, stack), player.x, player.y, player)
+		
+		player.sendToolBreakStatus(Hand.MAIN_HAND)  // 여기에 particle, sound 다 있음
+		// todo: particle tint (custom particle class)
+		//  - sendToolBreakStatus()에 particle 관련 코드가 어딨는지 찾아야함
 	}
 	
 	fun onCraft(
@@ -365,8 +394,7 @@ object GearHelper {
 		needParts: List<PartType> = emptyList(),
 		needStats: List<Stat> = emptyList(),
 	) {
-		// note: 제작 시 `player.world`로 제작 효과음 재생할 수 있음
-		Sound.play(player, SoundEvents.UI_STONECUTTER_TAKE_RESULT, SoundCategory.PLAYERS)
+		Sound.play(player, SoundEvents.BLOCK_ANVIL_USE, SoundCategory.PLAYERS)
 		
 		needParts.forEach { putPartIfMissing(stack, it) }
 		needStats.forEach { putStatIfMissing(stack, it) }
@@ -442,7 +470,7 @@ object GearHelper {
 		stack: ItemStack,
 	): Int {
 		// todofar: unique bar color?
-		return Color.GREEN.gradient(Color.RED, getRemainDurabilityRatio(stack)).toHex()
+		return Pair(Color.GREEN, Color.RED).gradient(getRemainDurabilityRatio(stack)).toHex()
 	}
 	
 	fun isItemBarVisible(

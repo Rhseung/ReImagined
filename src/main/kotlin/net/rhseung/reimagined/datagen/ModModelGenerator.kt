@@ -10,7 +10,7 @@ import net.rhseung.reimagined.ReImagined
 import net.rhseung.reimagined.registration.ModItems
 import net.rhseung.reimagined.tool.gears.base.IGearItem
 import net.rhseung.reimagined.tool.parts.base.IPartItem
-import net.rhseung.reimagined.utils.Name.pathName
+import net.rhseung.reimagined.utils.Text.pathName
 import net.rhseung.reimagined.utils.Texture
 
 class ModModelGenerator(output: FabricDataOutput) : FabricModelProvider(output) {

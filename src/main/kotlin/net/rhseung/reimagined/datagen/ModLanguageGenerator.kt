@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider
 import net.minecraft.item.Item
 import net.rhseung.reimagined.registration.ModItems
-import net.rhseung.reimagined.utils.Name.displayName
+import net.rhseung.reimagined.utils.Text.displayName
 
 class ModLanguageGenerator(
 	dataOutput: FabricDataOutput
@@ -19,7 +19,12 @@ class ModLanguageGenerator(
 			}
 		}
 		ModItems.GEARS.forEach {
-			if (it is Item) translationBuilder.add(it, it.getType().name.displayName())
+			if (it is Item) translationBuilder.add(it, "%s " + it.getType().name.displayName())
 		}
+		
+		// todo
+//		for (stat in Stat.values()) {
+//			translationBuilder.add("item.")
+//		}
 	}
 }

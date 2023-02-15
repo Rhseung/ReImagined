@@ -12,7 +12,7 @@ import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.tool.parts.util.PartHelper
-import net.rhseung.reimagined.utils.Name.pathName
+import net.rhseung.reimagined.utils.Text.pathName
 
 class HandlePart constructor (
 	override val material: Material

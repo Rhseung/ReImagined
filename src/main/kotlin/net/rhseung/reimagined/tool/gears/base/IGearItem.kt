@@ -11,6 +11,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
+import net.minecraft.item.Vanishable
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.text.Text
@@ -21,7 +22,7 @@ import net.rhseung.reimagined.tool.gears.enums.GearType
 import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 
-interface IGearItem : ItemConvertible {
+interface IGearItem : ItemConvertible, Vanishable {
 	val includeStats: List<Stat>
 	val includeParts: List<PartType>
 	val effectiveBlocks: TagKey<Block>

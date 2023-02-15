@@ -6,7 +6,7 @@ import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
-import net.rhseung.reimagined.utils.Name.pathName
+import net.rhseung.reimagined.utils.Text.pathName
 
 object GearData {
 	val NBT_ROOT = "Gear_Data"

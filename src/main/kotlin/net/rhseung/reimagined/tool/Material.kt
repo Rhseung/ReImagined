@@ -80,8 +80,7 @@ enum class Material(
 	fun getEnchantability() = min(7 + 3*((stat + weight) % 5) - (0.2F * weight).toInt(), 25).toFloat()
 	// todofar: 다른 스탯 공식도 만들기
 	
-	/** note:
-	 *   - stats
+	/**  - stats
 	 *   durability(s, w) = 24s^2.5 + 32w
 	 *   attack_damage(s, w) = 0.6s + 0.1w
 	 *   attack_speed(s, w) = 1.6 - 0.6w

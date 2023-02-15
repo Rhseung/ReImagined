@@ -25,7 +25,9 @@ import net.rhseung.reimagined.tool.gears.util.GearHelper
 import net.rhseung.reimagined.tool.parts.base.IPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 
-class PickaxeGear : Item(Settings().maxDamageIfAbsent(-1)), IMiningGearItem, Vanishable { // todo: trait 적용
+class PickaxeGear
+: Item(Settings().maxDamageIfAbsent(-1)), IMiningGearItem { // todo: trait 적용
+	
 	override val includeStats = PickaxeGear.includeStats
 	override val includeParts = PickaxeGear.includeParts
 	override val effectiveBlocks = PickaxeGear.effectiveBlocks
@@ -124,7 +126,8 @@ class PickaxeGear : Item(Settings().maxDamageIfAbsent(-1)), IMiningGearItem, Van
 		return GearHelper.getAttributeModifiers(
 			stack, slot,
 			attackDamageModifierId = ATTACK_DAMAGE_MODIFIER_ID,
-			attackSpeedModifierId = ATTACK_SPEED_MODIFIER_ID
+			attackSpeedModifierId = ATTACK_SPEED_MODIFIER_ID,
+			getType()
 		)
 	}
 	
@@ -146,7 +149,7 @@ class PickaxeGear : Item(Settings().maxDamageIfAbsent(-1)), IMiningGearItem, Van
 	}
 	
 	override fun getName(stack: ItemStack): Text {
-		return GearHelper.getName(stack)
+		return GearHelper.getName(stack, getType())
 	}
 	
 	override fun postProcessNbt(nbt: NbtCompound) {
