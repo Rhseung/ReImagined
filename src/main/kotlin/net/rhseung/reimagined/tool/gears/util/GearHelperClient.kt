@@ -11,9 +11,9 @@ object GearHelperClient {
 	const val BROKEN_ID = "broken"
 	
 	fun textureProcess() {
-		ModItems.GEARS.forEach { gear ->
+		ModItems.GEARS_LIST.forEach { gear ->
 			tintTexture({ stack, layerIndex ->
-				gear.getParts(stack)[gear.type.includeParts[layerIndex]]!!.material.color
+				gear.getParts(stack)[gear.type!!.includeParts[layerIndex]]!!.material.color
 			}, gear)
 			
 			overrideTexture(BROKEN_ID, { stack, _, _, _ ->

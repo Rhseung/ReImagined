@@ -20,7 +20,7 @@ import net.rhseung.reimagined.tool.gears.util.GearHelper
 import net.rhseung.reimagined.tool.parts.base.BasicPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 
-abstract class BasicGearItem : Item(Settings().maxCount(1)), Vanishable {
+open class BasicGearItem : Item(Settings().maxCount(1)), Vanishable {
 	open val type: GearType? = null
 	open val includeStats = if (type == null) emptySet() else type!!.includeStats
 	open val includeParts= if (type == null) emptyList() else type!!.includeParts

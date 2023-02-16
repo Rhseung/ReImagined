@@ -94,7 +94,7 @@ object GearData {
 		val root = getData(stack, NBT_ROOT_PARTS)
 		
 		for (part in parts) {
-			val compoundKey = part.getType()!!.name.pathName()
+			val compoundKey = part.type!!.name.pathName()
 			root.putString(compoundKey, part.material.name.pathName())
 		}
 	}

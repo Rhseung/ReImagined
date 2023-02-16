@@ -16,47 +16,10 @@ import net.rhseung.reimagined.utils.Text.pathName
 class BindingPart constructor (
 	override val material: Material
 ) : BasicPartItem() {
-	
-	override val includeStats = listOf(
-		Stat.DURABILITY,
-		Stat.ENCHANTABILITY
-	)
-	
-	override fun getType(): PartType {
-		return BindingPart.getType()
-	}
-	
-	override fun isEnchantable(stack: ItemStack?): Boolean {
-		return false
-	}
-	
-	override fun appendTooltip(
-		stack: ItemStack,
-		world: World?,
-		tooltip: MutableList<Text>,
-		context: TooltipContext
-	) {
-		PartHelper.appendTooltip(stack, world, tooltip, context, includeStats, material)
-	}
+	override val type = Companion.type
+	override val includeStats = type.includeStats
 	
 	companion object {
-		fun registerAll(): List<BindingPart> {
-			val ret = mutableListOf<BindingPart>()
-			
-			for (material in Material.values()) {
-				if (getType() !in material.canParts) continue
-				
-				ret.add(ModItems.registerItem(
-					"parts/${getType().name.pathName()}_${material.name.pathName()}",
-					BindingPart(material), if (material != Material.DUMMY) ModItemGroups.PARTS else null
-				))
-			}
-			
-			return ret
-		}
-		
-		fun getType(): PartType {
-			return PartType.BINDING
-		}
+		val type = PartType.BINDING
 	}
 }

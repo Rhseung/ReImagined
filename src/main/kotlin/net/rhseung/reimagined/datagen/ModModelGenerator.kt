@@ -8,7 +8,6 @@ import net.minecraft.registry.Registries
 import net.minecraft.util.Identifier
 import net.rhseung.reimagined.ReImagined
 import net.rhseung.reimagined.registration.ModItems
-import net.rhseung.reimagined.tool.gears.PickaxeGear
 import net.rhseung.reimagined.tool.gears.base.BasicGearItem
 import net.rhseung.reimagined.tool.gears.util.GearHelperClient
 import net.rhseung.reimagined.tool.parts.base.BasicPartItem
@@ -21,7 +20,7 @@ class ModModelGenerator(output: FabricDataOutput) : FabricModelProvider(output) 
 	
 	override fun generateItemModels(itemModelGenerator: ItemModelGenerator) {
 		ModItems.PARTS.values.forEach { it -> it.forEach { itemModelGenerator.generatePart(it) } }
-		ModItems.GEARS.forEach { itemModelGenerator.generateGear(it) }
+		ModItems.GEARS_LIST.forEach { itemModelGenerator.generateGear(it) }
 	}
 	
 	private fun <T : Item> ItemModelGenerator.generate(
@@ -62,7 +61,7 @@ class ModModelGenerator(output: FabricDataOutput) : FabricModelProvider(output) 
 	}
 	
 	private fun ItemModelGenerator.generatePart(part: BasicPartItem) {
-		this.generate(part, "parts/${part.getType()!!.name.pathName()}")
+		this.generate(part, "parts/${part.type!!.name.pathName()}")
 	}
 	
 	private fun ItemModelGenerator.generateGear(gear: BasicGearItem) {

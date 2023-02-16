@@ -15,7 +15,7 @@ object PartHelper {
 		world: World?,
 		tooltip: MutableList<Text>,
 		context: TooltipContext,
-		includeStats: List<Stat>,
+		includeStats: Set<Stat>,
 		material: Material
 	) {
 		for (stat in includeStats) {

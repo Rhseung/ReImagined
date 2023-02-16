@@ -16,48 +16,10 @@ import net.rhseung.reimagined.utils.Text.pathName
 class HandlePart constructor (
 	override val material: Material
 ) : BasicPartItem() {
-	
-	override val includeStats = listOf(
-		Stat.DURABILITY,
-		Stat.ATTACK_SPEED,
-		Stat.MINING_SPEED
-	)
-	
-	override fun getType(): PartType {
-		return HandlePart.getType()
-	}
-	
-	override fun isEnchantable(stack: ItemStack?): Boolean {
-		return false
-	}
-	
-	override fun appendTooltip(
-		stack: ItemStack,
-		world: World?,
-		tooltip: MutableList<Text>,
-		context: TooltipContext
-	) {
-		PartHelper.appendTooltip(stack, world, tooltip, context, includeStats, material)
-	}
+	override val type = Companion.type
+	override val includeStats = type.includeStats
 	
 	companion object {
-		fun registerAll(): List<HandlePart> {
-			val ret = mutableListOf<HandlePart>()
-			
-			for (material in Material.values()) {
-				if (getType() !in material.canParts) continue
-				
-				ret.add(ModItems.registerItem(
-					"parts/${getType().name.pathName()}_${material.name.pathName()}",
-					HandlePart(material), if (material != Material.DUMMY) ModItemGroups.PARTS else null
-				))
-			}
-			
-			return ret
-		}
-		
-		fun getType(): PartType {
-			return PartType.HANDLE
-		}
+		val type = PartType.HANDLE
 	}
 }

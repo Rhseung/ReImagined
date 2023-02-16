@@ -35,10 +35,10 @@ class GearRecipe constructor(
 			val slotStack = inventory.getStack(i)
 			
 			if (slotStack.item is BasicPartItem) {
-				if (hasParts[(slotStack.item as BasicPartItem).getType()!!] == true)
+				if (hasParts[(slotStack.item as BasicPartItem).type!!] == true)
 					return false
 				
-				hasParts[(slotStack.item as BasicPartItem).getType()!!] = true;
+				hasParts[(slotStack.item as BasicPartItem).type!!] = true;
 			}
 		}
 		
@@ -58,7 +58,7 @@ class GearRecipe constructor(
 	override fun craft(inventory: CraftingInventory): ItemStack {
 		if (selectedType == null) return ItemStack.EMPTY
 		
-		val output = ItemStack(ModItems.GEARS_MAP[selectedType])
+		val output = ItemStack(ModItems.GEARS[selectedType])
 		
 		val parts = mutableListOf<BasicPartItem>()
 		for (i in 0 until inventory.size()) {
