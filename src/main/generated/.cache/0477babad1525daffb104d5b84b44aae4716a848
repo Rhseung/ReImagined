@@ -1,4 +1,4 @@
-// 1.19.3	2023-02-16T01:37:33.3722636	ReImagined/Model Definitions
+// 1.19.3	2023-02-16T22:40:54.7016984	ReImagined/Model Definitions
 5060236ccba98c85e2a20743d097f8437ba3bec7 assets\reimagined\models\item\parts\binding_copper.json
 5060236ccba98c85e2a20743d097f8437ba3bec7 assets\reimagined\models\item\parts\binding_dummy.json
 58ac25d89ffb16cd1a131c4622f741d5f5118052 assets\reimagined\models\item\parts\pickaxe_head_stone.json
@@ -15,8 +15,8 @@
 5060236ccba98c85e2a20743d097f8437ba3bec7 assets\reimagined\models\item\parts\binding_netherite.json
 1762ec9a6d54dbc13dae02dfc55e8aa6cbe86178 assets\reimagined\models\item\parts\handle_wood.json
 6a7c28f6871d7f1422dd98dba21f08b47071ab6f assets\reimagined\models\item\gear\pickaxe_broken.json
-1762ec9a6d54dbc13dae02dfc55e8aa6cbe86178 assets\reimagined\models\item\parts\handle_diamond.json
 58ac25d89ffb16cd1a131c4622f741d5f5118052 assets\reimagined\models\item\parts\pickaxe_head_copper.json
 1762ec9a6d54dbc13dae02dfc55e8aa6cbe86178 assets\reimagined\models\item\parts\handle_netherite.json
-58ac25d89ffb16cd1a131c4622f741d5f5118052 assets\reimagined\models\item\parts\pickaxe_head_netherite.json
+1762ec9a6d54dbc13dae02dfc55e8aa6cbe86178 assets\reimagined\models\item\parts\handle_diamond.json
 1762ec9a6d54dbc13dae02dfc55e8aa6cbe86178 assets\reimagined\models\item\parts\handle_copper.json
+58ac25d89ffb16cd1a131c4622f741d5f5118052 assets\reimagined\models\item\parts\pickaxe_head_netherite.json

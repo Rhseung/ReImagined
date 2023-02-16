@@ -8,21 +8,19 @@ import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 import net.rhseung.reimagined.ReImagined
 import net.rhseung.reimagined.tool.gears.enums.GearType
-import net.rhseung.reimagined.tool.gears.recipes.PickaxeGearRecipe
+import net.rhseung.reimagined.tool.gears.recipes.GearRecipe
 
 object ModRecipes {
 	fun registerAll() {
-		GearType.values().forEach {
-			register(getRecipe(it))
-		}
+		register(GearRecipe.ID, GearRecipe.Type.INSTANCE, GearRecipe.Serializer.INSTANCE)
 	}
 	
-	fun getRecipe(gearType: GearType): Triple<String, RecipeType<*>, RecipeSerializer<*>> {
-		return when (gearType) {
-			GearType.PICKAXE ->
-				Triple(PickaxeGearRecipe.ID, PickaxeGearRecipe.Type.INSTANCE, PickaxeGearRecipe.Serializer.INSTANCE)
-		}
-	}
+//	fun getRecipe(gearType: GearType): Triple<String, RecipeType<*>, RecipeSerializer<*>> {
+//		return when (gearType) {
+//			GearType.PICKAXE ->
+//				Triple(PickaxeGearRecipe.ID, PickaxeGearRecipe.Type.INSTANCE, PickaxeGearRecipe.Serializer.INSTANCE)
+//		}
+//	}
 	
 	fun register(
 		id: String,

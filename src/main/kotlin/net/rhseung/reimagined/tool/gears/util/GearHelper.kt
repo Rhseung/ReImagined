@@ -17,13 +17,10 @@ import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.particle.ItemStackParticleEffect
-import net.minecraft.particle.ParticleTypes
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
@@ -35,12 +32,12 @@ import net.rhseung.reimagined.registration.ModBlockTags
 import net.rhseung.reimagined.registration.ModItems
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
-import net.rhseung.reimagined.tool.gears.base.IGearItem
+import net.rhseung.reimagined.tool.gears.base.BasicGearItem
 import net.rhseung.reimagined.tool.gears.enums.GearType
 import net.rhseung.reimagined.tool.gears.util.GearData.NBT_ROOT
 import net.rhseung.reimagined.tool.gears.util.GearData.putPartIfMissing
 import net.rhseung.reimagined.tool.gears.util.GearData.putStatIfMissing
-import net.rhseung.reimagined.tool.parts.base.IPartItem
+import net.rhseung.reimagined.tool.parts.base.BasicPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Color
 import net.rhseung.reimagined.utils.Color.Companion.gradient
@@ -85,7 +82,7 @@ object GearHelper {
 		stack: ItemStack,
 		partType: PartType,
 		partCompoundInput: NbtCompound? = null,
-	): IPartItem {
+	): BasicPartItem {
 		val partCompound = partCompoundInput ?: GearData.getData(stack, GearData.NBT_ROOT_PARTS)
 		
 		if (partCompound.contains(partType.name.pathName())) {
@@ -101,8 +98,8 @@ object GearHelper {
 	fun getParts(
 		stack: ItemStack,
 		includeParts: List<PartType>,
-	): Map<PartType, IPartItem> {
-		val parts = mutableMapOf<PartType, IPartItem>()
+	): Map<PartType, BasicPartItem> {
+		val parts = mutableMapOf<PartType, BasicPartItem>()
 		val partCompound = GearData.getData(stack, GearData.NBT_ROOT_PARTS)
 		
 		for (partType in includeParts) {
@@ -196,11 +193,11 @@ object GearHelper {
 		slot: EquipmentSlot,
 		attackDamageModifierId: UUID,
 		attackSpeedModifierId: UUID,
-		type: GearType,
+		type: GearType?,
 	): Multimap<EntityAttribute, EntityAttributeModifier> {
 		val builder = ImmutableMultimap.builder<EntityAttribute, EntityAttributeModifier>()
 		
-		if (isNotBroken(stack) && slot == EquipmentSlot.MAINHAND) {
+		if (isNotBroken(stack) && slot == EquipmentSlot.MAINHAND && type != null) {
 			builder.put(
 				EntityAttributes.GENERIC_ATTACK_DAMAGE, EntityAttributeModifier(
 					attackDamageModifierId,
@@ -234,7 +231,8 @@ object GearHelper {
 		return Registry.register(Registries.ATTRIBUTE, id, attribute) as EntityAttribute
 	}
 	
-	fun getName(stack: ItemStack, type: GearType): Text {
+	fun getName(stack: ItemStack, type: GearType?): Text {
+		if (type == null) return Text.literal("unknown")
 		return Text.translatable(stack.item.getTranslationKey(stack), getPart(stack, PartType.HEAD(type)).material.name.displayName())
 	}
 	
@@ -294,7 +292,7 @@ object GearHelper {
 	
 	fun postProcessNbt(
 		nbt: NbtCompound,
-		includeStats: List<Stat>,
+		includeStats: Set<Stat>,
 		includeParts: List<PartType>,
 	) {
 		val root = nbt.getCompound(NBT_ROOT)
@@ -308,7 +306,7 @@ object GearHelper {
 		world: World?,
 		tooltip: MutableList<Text>,
 		context: TooltipContext,
-		includeStats: List<Stat>,
+		includeStats: Set<Stat>,
 	) {
 		stack.addHideFlag(ItemStack.TooltipSection.MODIFIERS)
 		stack.addHideFlag(ItemStack.TooltipSection.ENCHANTMENTS)
@@ -391,8 +389,8 @@ object GearHelper {
 		stack: ItemStack,
 		world: World,
 		player: PlayerEntity,
-		needParts: List<PartType> = emptyList(),
-		needStats: List<Stat> = emptyList(),
+		needParts: Set<PartType> = emptySet(),
+		needStats: Set<Stat> = emptySet(),
 	) {
 		Sound.play(player, SoundEvents.BLOCK_ANVIL_USE, SoundCategory.PLAYERS)
 		
@@ -407,16 +405,19 @@ object GearHelper {
 		stack: ItemStack,
 		ingredient: ItemStack,
 		includeParts: List<PartType>,
-		gearType: GearType,
+		gearType: GearType?,
 	): Boolean {
+		if (gearType == null) return false
 		return getPart(stack, PartType.PICKAXE_HEAD).material.repairIngredient.test(ingredient)
 	}
 	
 	fun isSuitableFor(
 		stack: ItemStack,
 		state: BlockState,
-		effectiveBlocks: TagKey<Block>,
+		effectiveBlocks: TagKey<Block>?,
 	): Boolean {
+		if (effectiveBlocks == null) return false
+		
 		val tier = getMiningTier(stack)
 		
 		for (i in Material.MAX_TIER downTo 1)
@@ -442,7 +443,7 @@ object GearHelper {
 	fun isGear(
 		stack: ItemStack,
 	): Boolean {
-		return stack.item is IGearItem
+		return stack.item is BasicGearItem
 	}
 	
 	fun isNotGear(

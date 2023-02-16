@@ -1,8 +1,6 @@
 package net.rhseung.reimagined.utils
 
-import net.rhseung.reimagined.utils.Text.round
 import java.lang.Integer.min
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -125,7 +123,7 @@ class Color {
 	}
 	
 	fun darker(delta: Int): Color {
-		check(delta >= 0) { "use `Color#brighter`" }
+		check(delta >= 0) { "use Color.brighter(${-delta}) instead" }
 		
 		return Color(
 			max(R - delta, 0),
@@ -135,7 +133,7 @@ class Color {
 	}
 	
 	fun brighter(delta: Int): Color {
-		check(delta >= 0) { "use `Color#darker`" }
+		check(delta >= 0) { "use Color.darker(${-delta}) instead" }
 		
 		return Color(
 			min(R + delta, 255),

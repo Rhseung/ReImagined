@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.random.Random;
-import net.rhseung.reimagined.tool.gears.base.IGearItem;
+import net.rhseung.reimagined.tool.gears.base.BasicGearItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import net.rhseung.reimagined.tool.gears.util.GearHelper;
@@ -16,7 +16,7 @@ public abstract class EnchantabilityMixin {
 		at = @At(value = "INVOKE", target = "net/minecraft/item/Item.getEnchantability ()I")
 	)
 	private static int generateEnchantments_mixin(int original, Random random, ItemStack stack, int level, boolean treasureAllowed) {
-		return GearHelper.isGear(stack) ? ((IGearItem) stack.getItem()).getEnchantability(stack) : original;
+		return GearHelper.isGear(stack) ? ((BasicGearItem) stack.getItem()).getEnchantability(stack) : original;
 	}
 
 	@ModifyExpressionValue(
@@ -24,6 +24,6 @@ public abstract class EnchantabilityMixin {
 		at = @At(value = "INVOKE", target = "net/minecraft/item/Item.getEnchantability ()I")
 	)
 	private static int calculateRequiredExperienceLevel_mixin(int original, Random random, int slotIndex, int bookshelfCount, ItemStack stack) {
-		return GearHelper.isGear(stack) ? ((IGearItem) stack.getItem()).getEnchantability(stack) : original;
+		return GearHelper.isGear(stack) ? ((BasicGearItem) stack.getItem()).getEnchantability(stack) : original;
 	}
 }

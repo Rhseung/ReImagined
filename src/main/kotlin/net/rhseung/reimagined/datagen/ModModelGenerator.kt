@@ -8,8 +8,10 @@ import net.minecraft.registry.Registries
 import net.minecraft.util.Identifier
 import net.rhseung.reimagined.ReImagined
 import net.rhseung.reimagined.registration.ModItems
-import net.rhseung.reimagined.tool.gears.base.IGearItem
-import net.rhseung.reimagined.tool.parts.base.IPartItem
+import net.rhseung.reimagined.tool.gears.PickaxeGear
+import net.rhseung.reimagined.tool.gears.base.BasicGearItem
+import net.rhseung.reimagined.tool.gears.util.GearHelperClient
+import net.rhseung.reimagined.tool.parts.base.BasicPartItem
 import net.rhseung.reimagined.utils.Text.pathName
 import net.rhseung.reimagined.utils.Texture
 
@@ -37,7 +39,7 @@ class ModModelGenerator(output: FabricDataOutput) : FabricModelProvider(output) 
 		
 		// 파일 이름 정하기
 		val wholeOverrides = (if (!makeBrokenTexture) overrides else overrides + Texture.OverrideTexture(
-			"broken",
+			GearHelperClient.BROKEN_ID,
 			1
 		)).map { it.modelNameWithPrefix("${id.path.replaceFirst("item/", "")}_") }
 		
@@ -53,25 +55,22 @@ class ModModelGenerator(output: FabricDataOutput) : FabricModelProvider(output) 
 		wholeOverrides.forEach { override -> Texture.upload(
 			Identifier(ReImagined.MOD_ID, override.modelName).withPrefixedPath("item/"),
 			this.writer,
-			textureMap.mapValues { (key, value) ->
+			textureMap.mapValues { (_, value) ->
 					value.withPath { it + "_${override.id}" }
 			}
 		)}
 	}
 	
-	private fun ItemModelGenerator.generatePart(part: IPartItem) {
-		if (part !is Item) return
-		
-		this.generate(part, "parts/${part.getType().name.pathName()}")
+	private fun ItemModelGenerator.generatePart(part: BasicPartItem) {
+		this.generate(part, "parts/${part.getType()!!.name.pathName()}")
 	}
 	
-	private fun ItemModelGenerator.generateGear(gear: IGearItem) {
-		if (gear !is Item) return
-		
+	private fun ItemModelGenerator.generateGear(gear: BasicGearItem) {
 		val texturePaths = mutableListOf<String>()
-		gear.includeParts.forEach { partType ->
+		
+		gear.type!!.includeParts.forEach { partType ->
 			texturePaths.add(
-				"gear/${gear.getType().name.pathName()}/" +
+				"gear/${gear.type!!.name.pathName()}/" +
 						partType.name.split("_").last().pathName()
 			)
 		}

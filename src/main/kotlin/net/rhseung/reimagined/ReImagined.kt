@@ -8,7 +8,7 @@ import net.rhseung.reimagined.registration.ModRecipes
 import org.slf4j.LoggerFactory
 
 object ReImagined : ModInitializer {
-	val MOD_ID = "reimagined"
+	const val MOD_ID = "reimagined"
 	val LOGGER = LoggerFactory.getLogger(ReImagined.MOD_ID)
 
 	override fun onInitialize() {

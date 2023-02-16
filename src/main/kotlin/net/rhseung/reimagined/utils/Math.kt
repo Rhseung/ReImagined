@@ -1,5 +1,8 @@
 package net.rhseung.reimagined.utils
 
+import kotlin.math.pow
+import kotlin.math.roundToInt
+
 object Math {
 	fun sum(vararg numbers: Int): Int {
 		return numbers.reduce { acc, cur -> acc + cur }
@@ -25,5 +28,10 @@ object Math {
 			exp--
 		}
 		return ret
+	}
+	
+	fun Float.roundTo(n: Int = 0): Float {
+		val p = 10F.pow(n)
+		return (this * p).roundToInt() / p
 	}
 }

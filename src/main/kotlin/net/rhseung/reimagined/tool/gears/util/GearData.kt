@@ -4,8 +4,9 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
-import net.rhseung.reimagined.tool.parts.base.IPartItem
+import net.rhseung.reimagined.tool.parts.base.BasicPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
+import net.rhseung.reimagined.utils.Math.roundTo
 import net.rhseung.reimagined.utils.Text.pathName
 
 object GearData {
@@ -88,20 +89,20 @@ object GearData {
 	
 	fun writeParts(
 		stack: ItemStack,
-		vararg parts: IPartItem
+		vararg parts: BasicPartItem
 	) {
 		val root = getData(stack, NBT_ROOT_PARTS)
 		
 		for (part in parts) {
-			val compoundKey = part.getType().name.pathName()
+			val compoundKey = part.getType()!!.name.pathName()
 			root.putString(compoundKey, part.material.name.pathName())
 		}
 	}
 	
 	fun recalculate(
 		output: ItemStack,
-		includeStats: List<Stat>,
-		vararg parts: IPartItem
+		includeStats: Set<Stat>,
+		vararg parts: BasicPartItem
 	) {
 		for (stat in includeStats) {
 			var count = 0
@@ -114,7 +115,7 @@ object GearData {
 				}
 			}
 			
-			writeStats(output, stat to (value / count))
+			writeStats(output, stat to (value / count).roundTo(2))
 		}
 	}
 }

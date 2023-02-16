@@ -22,7 +22,7 @@ class GearTooltipComponent constructor(
 	private val data: GearTooltipData
 ): TooltipComponent {
 	val attackDamage = GearHelper.getAttackDamage(data.stack).removeZero().toText()
-	val attackSpeed = (data.gear.getType().baseAttackSpeed + GearHelper.getAttackSpeed(data.stack)).round(1).toText()
+	val attackSpeed = (data.gear.type!!.baseAttackSpeed + GearHelper.getAttackSpeed(data.stack)).round(1).toText()
 	val miningSpeed = GearHelper.getMiningSpeed(data.stack, getMax = true).removeZero().toText()
 	val miningTier = coloring(GearHelper.getMiningTier(data.stack).toString(), getColor(GearHelper.getMiningTier(data.stack)))
 	val durability = "{${GearHelper.getRemainDurability(data.stack)}}{/${GearHelper.getMaxDurability(data.stack)}}".coloring(

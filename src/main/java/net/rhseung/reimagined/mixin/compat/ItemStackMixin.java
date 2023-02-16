@@ -3,7 +3,7 @@ package net.rhseung.reimagined.mixin.compat;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.rhseung.reimagined.tool.gears.base.IGearItem;
+import net.rhseung.reimagined.tool.gears.base.BasicGearItem;
 import net.rhseung.reimagined.tool.gears.util.GearHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,7 +19,7 @@ public abstract class ItemStackMixin {
     private int getMaxDamage_mixin(int original) {
         ItemStack that = (ItemStack) (Object) this;
 
-        if (that.getItem() instanceof IGearItem) return GearHelper.INSTANCE.getMaxDurability(that);
+        if (that.getItem() instanceof BasicGearItem) return GearHelper.INSTANCE.getMaxDurability(that);
         else return original;
     }
 
@@ -31,7 +31,7 @@ public abstract class ItemStackMixin {
     private void isDamageable_mixin(CallbackInfoReturnable<Boolean> cir) {
         ItemStack that = (ItemStack) (Object) this;
 
-        if (that.getItem() instanceof IGearItem) {
+        if (that.getItem() instanceof BasicGearItem) {
             cir.setReturnValue(true);
         }
         else if (!that.isEmpty() && that.getItem().getMaxDamage() > 0) {

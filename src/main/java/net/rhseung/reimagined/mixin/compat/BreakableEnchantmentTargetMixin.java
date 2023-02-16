@@ -2,8 +2,7 @@ package net.rhseung.reimagined.mixin.compat;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.item.Item;
-import net.rhseung.reimagined.tool.gears.base.IGearItem;
-import net.rhseung.reimagined.tool.gears.base.IMiningGearItem;
+import net.rhseung.reimagined.tool.gears.base.BasicGearItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -30,6 +29,6 @@ public abstract class BreakableEnchantmentTargetMixin {
         at = @At("RETURN")
     )
     private boolean isAcceptableItem_mixin(boolean original, Item item) {
-        return original || item instanceof IGearItem;
+        return original || item instanceof BasicGearItem;
     }
 }
