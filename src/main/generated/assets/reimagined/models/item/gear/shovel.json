@@ -1,0 +1,16 @@
+{
+  "parent": "minecraft:item/handheld",
+  "overrides": [
+    {
+      "model": "reimagined:item/gear/shovel_broken",
+      "predicate": {
+        "broken": 1
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "reimagined:item/gear/shovel/handle",
+    "layer1": "reimagined:item/gear/shovel/head",
+    "layer2": "reimagined:item/gear/shovel/binding"
+  }
+}

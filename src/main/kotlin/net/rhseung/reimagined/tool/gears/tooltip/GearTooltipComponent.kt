@@ -33,11 +33,15 @@ class GearTooltipComponent constructor(
 		)
 	
 	override fun getHeight(): Int {
-		return Draw.getHeight(attackDamage, true) + Draw.getHeight(miningSpeed, true) + if (Screen.hasShiftDown()) {
-			Draw.getHeight(miningTier, true) + Draw.getHeight(null, true) + if (EnchantmentHelper.get(data.stack)
-					.isNotEmpty()
-			) Draw.getHeight(null, true) else 0
-		} else 0
+		return Draw.getHeight(attackDamage, true) +
+			if (Screen.hasShiftDown()) {
+				Draw.getHeight(miningSpeed, true) +
+				Draw.getHeight(miningTier, true) +
+				Draw.getHeight(null, true) +
+				if (EnchantmentHelper.get(data.stack).isNotEmpty())
+					Draw.getHeight(null, true)
+				else 0
+			} else 0
 	}
 	
 	override fun getWidth(textRenderer: TextRenderer): Int {
@@ -64,6 +68,7 @@ class GearTooltipComponent constructor(
 			draw.addVertical(Icon.MINING_LEVEL, miningTier)
 			if (EnchantmentHelper.get(data.stack).isNotEmpty()) {
 				draw.addVertical(Icon.ENCHANTMENT, "Enchantments".toText())
+				// todo: "Enchantments" -> translatable text
 			}
 		}
 	}

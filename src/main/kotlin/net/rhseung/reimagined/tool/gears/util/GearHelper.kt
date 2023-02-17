@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap
 import net.minecraft.advancement.criterion.Criteria
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
+import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.enchantment.Enchantments
@@ -310,12 +311,13 @@ object GearHelper {
 		context: TooltipContext,
 		includeStats: Set<Stat>,
 	) {
+		// todo: component보다 위에 하나(constructions), 밑에 하나(stats, need shift)
 		stack.addHideFlag(ItemStack.TooltipSection.MODIFIERS)
 		stack.addHideFlag(ItemStack.TooltipSection.ENCHANTMENTS)
 		
 		val enchantments = EnchantmentHelper.get(stack)
 		
-		if (enchantments.isNotEmpty()) {
+		if (enchantments.isNotEmpty() && Screen.hasShiftDown()) {
 			for ((enchantment, level) in enchantments) {
 				tooltip.add(
 					"  {-} {${getEnchantmentFullName(enchantment, level)}}".coloring(
@@ -328,7 +330,6 @@ object GearHelper {
 			}
 		}
 		// todo: Mining Tier는 알파벳으로 써주는게 좋음
-		// todo: translatable text
 	}
 	
 	/**
@@ -410,7 +411,7 @@ object GearHelper {
 		gearType: GearType?,
 	): Boolean {
 		if (gearType == null) return false
-		return getPart(stack, PartType.PICKAXE_HEAD).material.repairIngredient.test(ingredient)
+		return getPart(stack, PartType.HEAD(gearType)).material.repairIngredient.test(ingredient)
 	}
 	
 	fun isSuitableFor(

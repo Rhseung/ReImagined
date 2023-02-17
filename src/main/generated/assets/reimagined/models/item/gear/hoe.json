@@ -1,0 +1,16 @@
+{
+  "parent": "minecraft:item/handheld",
+  "overrides": [
+    {
+      "model": "reimagined:item/gear/hoe_broken",
+      "predicate": {
+        "broken": 1
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "reimagined:item/gear/hoe/handle",
+    "layer1": "reimagined:item/gear/hoe/head",
+    "layer2": "reimagined:item/gear/hoe/binding"
+  }
+}

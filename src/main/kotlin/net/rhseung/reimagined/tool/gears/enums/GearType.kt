@@ -5,7 +5,9 @@ import net.minecraft.registry.tag.BlockTags
 import net.minecraft.registry.tag.TagKey
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.gears.AxeGear
+import net.rhseung.reimagined.tool.gears.HoeGear
 import net.rhseung.reimagined.tool.gears.PickaxeGear
+import net.rhseung.reimagined.tool.gears.ShovelGear
 import net.rhseung.reimagined.tool.gears.base.BasicGearItem
 import net.rhseung.reimagined.tool.gears.base.BasicMiningGearItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
@@ -19,7 +21,7 @@ enum class GearType constructor(
 	val baseAttackSpeed: Double,
 	val includeStats: Set<Stat>,
 	val includeParts: List<PartType>,
-	val effectiveBlocks: TagKey<Block>? = null,
+	val effectiveBlocks: TagKey<Block>? = null
 ) {
 	GEAR(BasicGearItem::class,
 		0.0, 0.0,
@@ -62,12 +64,26 @@ enum class GearType constructor(
 		includeStats = MINING_GEAR.includeStats,
 		includeParts = MINING_GEAR.includeParts.append(1, PartType.AXE_HEAD),
 		effectiveBlocks = BlockTags.AXE_MINEABLE
+	),
+	SHOVEL(ShovelGear::class,
+		1.5, 1.0,
+		includeStats = MINING_GEAR.includeStats,
+		includeParts = MINING_GEAR.includeParts.append(1, PartType.SHOVEL_HEAD),
+		effectiveBlocks = BlockTags.SHOVEL_MINEABLE
+	),
+	HOE(HoeGear::class,
+		1.0, 1.4,
+		includeStats = MINING_GEAR.includeStats,
+		includeParts = MINING_GEAR.includeParts.append(1, PartType.HOE_HEAD),
+		effectiveBlocks = BlockTags.HOE_MINEABLE
 	);
 	
 //	val instance = gearClass.primaryConstructor!!.call()
 	fun instance() = when (this) {
 		PICKAXE -> PickaxeGear()
 		AXE -> AxeGear()
+		SHOVEL -> ShovelGear()
+		HOE -> HoeGear()
 		else -> error("GEAR랑 MINING_GEAR는 instance를 받지 않습니다.")
 	}
 	
