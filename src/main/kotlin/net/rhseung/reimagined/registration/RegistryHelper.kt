@@ -12,9 +12,11 @@ import net.rhseung.reimagined.ReImagined
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.gears.base.BasicGearItem
 import net.rhseung.reimagined.tool.gears.enums.GearType
+import net.rhseung.reimagined.tool.parts.PickaxeHeadPart
 import net.rhseung.reimagined.tool.parts.base.BasicPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Text.pathName
+import kotlin.reflect.full.primaryConstructor
 
 object RegistryHelper {
 	fun <T : Item> registerItem(
@@ -36,12 +38,12 @@ object RegistryHelper {
 	fun registerParts(partType: PartType): List<BasicPartItem> {
 		val ret = mutableListOf<BasicPartItem>()
 		
-		for (material in Material.values()) {
+		for (material in Material.getValues()) {
 			if (partType !in material.canParts) continue
 			
 			ret.add(registerItem(
 				"parts/${partType.name.pathName()}_${material.name.pathName()}",
-				partType.instance(material), if (material != Material.DUMMY) ModItemGroups.PARTS else null
+				partType.instance(material), ModItemGroups.PARTS
 			))
 		}
 		

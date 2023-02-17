@@ -22,6 +22,6 @@ object ModItems {
 	
 	var GEARS_LIST = GEARS.values.toList()
 	
-	val PARTS: Map<PartType, List<BasicPartItem>> = PartType.values()
+	val PARTS: Map<PartType, List<BasicPartItem>> = PartType.getValues()
 		.associateWith { RegistryHelper.registerParts(it) }
 }

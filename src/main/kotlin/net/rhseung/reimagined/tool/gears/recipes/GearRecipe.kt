@@ -29,7 +29,7 @@ class GearRecipe constructor(
 		inventory: CraftingInventory,
 		world: World?
 	): Boolean {
-		val hasParts = PartType.values().toList().associateWith { false }.toMutableMap()
+		val hasParts = PartType.getValues().associateWith { false }.toMutableMap()
 		
 		for (i in 0 until inventory.size()) {
 			val slotStack = inventory.getStack(i)

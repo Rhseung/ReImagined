@@ -19,12 +19,7 @@ object PartHelper {
 		material: Material
 	) {
 		for (stat in includeStats) {
-			if (stat == Stat.MINING_TIER) tooltip.add(stat.getDisplayTextUsingValue(
-				stack,
-				material.getStat(stat),
-				colorOfStatValue = material.color
-			))
-			else tooltip.add(stat.getDisplayTextUsingValue(stack, material.getStat(stat)))
+			tooltip.add(stat.getDisplayTextUsingValue(stack, material.getStat(stat)))
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package net.rhseung.reimagined.tool.gears.tooltip
 
 import net.minecraft.client.font.TextRenderer
+import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.tooltip.TooltipComponent
 import net.minecraft.client.render.item.ItemRenderer
 import net.minecraft.client.util.math.MatrixStack
@@ -19,28 +20,28 @@ import net.rhseung.reimagined.utils.Tooltip.coloring
 import java.lang.Integer.max
 
 class GearTooltipComponent constructor(
-	private val data: GearTooltipData
-): TooltipComponent {
-	val attackDamage = GearHelper.getAttackDamage(data.stack).removeZero().toText()
-	val attackSpeed = (data.gear.type!!.baseAttackSpeed + GearHelper.getAttackSpeed(data.stack)).round(1).toText()
+	private val data: GearTooltipData,
+) : TooltipComponent {
+	val attackDamage = GearHelper.getAttackDamage(data.stack, data.gear.type).removeZero().toText()
+	val attackSpeed = GearHelper.getAttackSpeed(data.stack, data.gear.type).round(1).toText()
 	val miningSpeed = GearHelper.getMiningSpeed(data.stack, getMax = true).removeZero().toText()
-	val miningTier = coloring(GearHelper.getMiningTier(data.stack).toString(), getColor(GearHelper.getMiningTier(data.stack)))
-	val durability = "{${GearHelper.getRemainDurability(data.stack)}}{/${GearHelper.getMaxDurability(data.stack)}}".coloring(
-		Color.WHITE, Color.DARK_GRAY
-	)
+	val miningTier =
+		coloring(GearHelper.getMiningTier(data.stack).toString(), getColor(GearHelper.getMiningTier(data.stack)))
+	val durability =
+		"{${GearHelper.getRemainDurability(data.stack)}}{/${GearHelper.getMaxDurability(data.stack)}}".coloring(
+			Color.WHITE, Color.DARK_GRAY
+		)
 	
 	override fun getHeight(): Int {
-		return Draw.getHeight(attackDamage, true) +
-			Draw.getHeight(miningSpeed, true) +
-			Draw.getHeight(miningTier, true) +
-			Draw.getHeight(null, true) +
-			if (EnchantmentHelper.get(data.stack).isNotEmpty()) Draw.getHeight(null, true) else 0
+		return Draw.getHeight(attackDamage, true) + Draw.getHeight(miningSpeed, true) + if (Screen.hasShiftDown()) {
+			Draw.getHeight(miningTier, true) + Draw.getHeight(null, true) + if (EnchantmentHelper.get(data.stack)
+					.isNotEmpty()
+			) Draw.getHeight(null, true) else 0
+		} else 0
 	}
 	
 	override fun getWidth(textRenderer: TextRenderer): Int {
-		return textRenderer.getWidth(attackDamage, true) +
-				textRenderer.getWidth(attackSpeed, true) +
-				textRenderer.getWidth(durability, true) - NEXT_WIDTH
+		return textRenderer.getWidth(attackDamage, true) + textRenderer.getWidth(attackSpeed, true)
 	}
 	
 	override fun drawItems(
@@ -55,14 +56,15 @@ class GearTooltipComponent constructor(
 		
 		draw.addHorizontal(Icon.ATTACK_DAMAGE, attackDamage)
 		draw.addHorizontal(Icon.ATTACK_SPEED, attackSpeed)
-		draw.addHorizontal(Icon.DURABILITY, durability)
 		
-		draw.y += (Draw.ICON_HEIGHT + Draw.SPACE_HEIGHT) * 2
-		
-		draw.addVertical(Icon.MINING_SPEED, miningSpeed)
-		draw.addVertical(Icon.MINING_LEVEL, miningTier)
-		if (EnchantmentHelper.get(data.stack).isNotEmpty()) {
-			draw.addVertical(Icon.ENCHANTMENT, "Enchantments".toText())
+		if (Screen.hasShiftDown()) {
+			draw.y += (Draw.ICON_HEIGHT + Draw.SPACE_HEIGHT)
+			draw.addVertical(Icon.DURABILITY, durability)
+			draw.addVertical(Icon.MINING_SPEED, miningSpeed)
+			draw.addVertical(Icon.MINING_LEVEL, miningTier)
+			if (EnchantmentHelper.get(data.stack).isNotEmpty()) {
+				draw.addVertical(Icon.ENCHANTMENT, "Enchantments".toText())
+			}
 		}
 	}
 }

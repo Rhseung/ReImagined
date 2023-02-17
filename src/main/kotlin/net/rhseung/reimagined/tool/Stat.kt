@@ -13,24 +13,43 @@ enum class Stat constructor(
 	val color: Color,
 	val isInt: Boolean = false,
 	val defaultValue: Float,
-	val formatString: String = "" // todo
 ) {
-	DURABILITY(Color.DARK_GREEN, isInt = true, defaultValue = 1.0F,
-		"{Durability:} {%d}{/}{%d}"),
-	ATTACK_DAMAGE(Color.SMOOTH_RED, defaultValue = 0.0F),
-	ATTACK_SPEED(Color.SMOOTH_VIOLET, defaultValue = 1.0F),
-	MINING_TIER(getColor(-1), isInt = true, defaultValue = 0.0F),
-	MINING_SPEED(Color.SMOOTH_BLUE, defaultValue = 1.0F),
-	ENCHANTABILITY(Color.GOLD, isInt = true, defaultValue = 10.0F);
+	DURABILITY(
+		Color.DARK_GREEN,
+		isInt = true,
+		defaultValue = 1.0F
+	),
+	ATTACK_DAMAGE(
+		Color.SMOOTH_RED,
+		defaultValue = 0.0F
+	),
+	ATTACK_SPEED(
+		Color.SMOOTH_VIOLET,
+		defaultValue = 1.0F
+	),
+	MINING_TIER(
+		Color.WHITE,
+		isInt = true,
+		defaultValue = 0.0F
+	),
+	MINING_SPEED(
+		Color.SMOOTH_BLUE,
+		defaultValue = 1.0F
+	),
+	ENCHANTABILITY(
+		Color.GOLD,
+		isInt = true,
+		defaultValue = 10.0F
+	);
 	// todofar: 다른 스탯도 추가하기
 	
 	fun getDisplayTextUsingNBT(
 		stack: ItemStack,
 		colorOfStatName: Color = Color.GRAY,
-		colorOfStatValue: ((ItemStack) -> Color)? = null
+		colorOfStatValue: ((ItemStack) -> Color)? = null,
 	): MutableText {
 		return ("{${name.displayName()}:} " +
-			"{${if (isInt) getStat(stack, this).toInt() else getStat(stack, this).round()}}").coloring(
+				"{${if (isInt) getStat(stack, this).toInt() else getStat(stack, this).round()}}").coloring(
 			colorOfStatName, if (colorOfStatValue == null) color else colorOfStatValue(stack)
 		)
 		// todofar: Text.translatable
@@ -41,7 +60,7 @@ enum class Stat constructor(
 		stack: ItemStack,
 		value: Float,
 		colorOfStatName: Color = Color.GRAY,
-		colorOfStatValue: Color? = null
+		colorOfStatValue: Color? = null,
 	): MutableText {
 		return ("{${name.displayName()}:} {${if (isInt) value.toInt() else value.round()}}").coloring(
 			colorOfStatName, colorOfStatValue ?: color

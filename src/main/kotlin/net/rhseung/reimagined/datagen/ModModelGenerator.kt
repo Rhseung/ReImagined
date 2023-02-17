@@ -19,7 +19,7 @@ class ModModelGenerator(output: FabricDataOutput) : FabricModelProvider(output) 
 	}
 	
 	override fun generateItemModels(itemModelGenerator: ItemModelGenerator) {
-		ModItems.PARTS.values.forEach { it -> it.forEach { itemModelGenerator.generatePart(it) } }
+		ModItems.PARTS.values.forEach { partItems -> partItems.forEach { itemModelGenerator.generatePart(it) } }
 		ModItems.GEARS_LIST.forEach { itemModelGenerator.generateGear(it) }
 	}
 	

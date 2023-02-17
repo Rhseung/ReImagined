@@ -4,20 +4,25 @@ import net.minecraft.block.Block
 import net.minecraft.registry.tag.BlockTags
 import net.minecraft.registry.tag.TagKey
 import net.rhseung.reimagined.tool.Stat
+import net.rhseung.reimagined.tool.gears.AxeGear
 import net.rhseung.reimagined.tool.gears.PickaxeGear
 import net.rhseung.reimagined.tool.gears.base.BasicGearItem
 import net.rhseung.reimagined.tool.gears.base.BasicMiningGearItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Utils.append
+import kotlin.reflect.KClass
+import kotlin.reflect.full.primaryConstructor
 
 enum class GearType constructor(
+	private val gearClass: KClass<out BasicGearItem>,
+	val baseAttackDamage: Double,
 	val baseAttackSpeed: Double,
 	val includeStats: Set<Stat>,
 	val includeParts: List<PartType>,
 	val effectiveBlocks: TagKey<Block>? = null,
 ) {
-	GEAR(
-		0.0,
+	GEAR(BasicGearItem::class,
+		0.0, 0.0,
 		includeStats = setOf(
 			Stat.ATTACK_DAMAGE,
 			Stat.ATTACK_SPEED,
@@ -29,8 +34,8 @@ enum class GearType constructor(
 		),
 		effectiveBlocks = null
 	),
-	MINING_GEAR(
-		0.0,
+	MINING_GEAR(BasicMiningGearItem::class,
+		0.0, 0.0,
 		includeStats = setOf(
 			Stat.ATTACK_DAMAGE,
 			Stat.ATTACK_SPEED,
@@ -46,15 +51,23 @@ enum class GearType constructor(
 		effectiveBlocks = null
 	),
 	
-	PICKAXE(
-		1.2,
+	PICKAXE(PickaxeGear::class,
+		1.0, 1.2,
 		includeStats = MINING_GEAR.includeStats,
 		includeParts = MINING_GEAR.includeParts.append(1, PartType.PICKAXE_HEAD),
 		effectiveBlocks = BlockTags.PICKAXE_MINEABLE
+	),
+	AXE(AxeGear::class,
+		4.0, 1.0,
+		includeStats = MINING_GEAR.includeStats,
+		includeParts = MINING_GEAR.includeParts.append(1, PartType.AXE_HEAD),
+		effectiveBlocks = BlockTags.AXE_MINEABLE
 	);
 	
+//	val instance = gearClass.primaryConstructor!!.call()
 	fun instance() = when (this) {
 		PICKAXE -> PickaxeGear()
+		AXE -> AxeGear()
 		else -> error("GEAR랑 MINING_GEAR는 instance를 받지 않습니다.")
 	}
 	

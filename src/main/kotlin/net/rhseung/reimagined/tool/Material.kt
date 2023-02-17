@@ -5,6 +5,7 @@ import net.minecraft.recipe.Ingredient
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Color
 import net.rhseung.reimagined.utils.Math.pow
+import net.rhseung.reimagined.utils.Text.pathName
 import java.lang.Integer.min
 
 enum class Material(
@@ -13,7 +14,7 @@ enum class Material(
 	val stat: Int,
 	val weight: Int,
 	val trait: Trait? = null,
-	val canParts: List<PartType>,
+	var canParts: MutableSet<PartType>,
 	
 	val isMetal: Boolean = true,
 	
@@ -24,39 +25,39 @@ enum class Material(
 ) {
 	DUMMY(
 		color = Color.WHITE, stat = -1, weight = -1, isMetal = false,
-		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
+		canParts = mutableSetOf(*PartType.HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.CHAIN)
 	),
 	WOOD( /** durability: 32 */
 		color = Color(150, 116, 65), stat = 0, weight = 1, isMetal = false,
-		canParts = listOf(PartType.PICKAXE_HEAD, PartType.HANDLE),
+		canParts = mutableSetOf(*PartType.HEAD, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.OAK_PLANKS)
 	),
 	STONE( /** durability: 88 */
 		color = Color(149, 145, 141), stat = 1, weight = 2, isMetal = false,
-		canParts = listOf(PartType.PICKAXE_HEAD, PartType.HANDLE),
+		canParts = mutableSetOf(*PartType.HEAD, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.COBBLESTONE)
 	),
 	COPPER( /** durability: 320 */
 		color = Color(202, 118, 91), stat = 2, weight = 4,
-		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
+		canParts = mutableSetOf(*PartType.HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.COPPER_INGOT)
 	),
 	IRON( /** durability: 808 */
 		color = Color(215, 215, 215), stat = 3, weight = 5,
-		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
+		canParts = mutableSetOf(*PartType.HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.IRON_INGOT)
 	),
 	DIAMOND( /** durability: 1632 */
 		color = Color(43, 199, 172), stat = 4, weight = 3,
-		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
+		canParts = mutableSetOf(*PartType.HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.DIAMOND)
 	),  // todofar: 다이아몬드는 보석류이므로 나중에 없앨거임
 	//      - 강철로 할 것 같음
 	//      - 용광로(->합금제조기)랑 훈연기(->코크오븐) 오버라이딩해서 만들 예정
 	NETHERITE( /** durability: 3160 */
 		color = Color(134, 123, 134), stat = 5, weight = 5, trait = Trait.Fireproof,
-		canParts = listOf(PartType.PICKAXE_HEAD, PartType.BINDING, PartType.HANDLE),
+		canParts = mutableSetOf(*PartType.HEAD, PartType.BINDING, PartType.HANDLE),
 		repairIngredient = Ingredient.ofItems(Items.NETHERITE_INGOT)
 	);
 	
@@ -106,5 +107,7 @@ enum class Material(
 		fun getColor(miningLevel: Int): Color {
 			return get(miningLevel).color
 		}
+		
+		fun getValues() = Material.values().filter { it != DUMMY }
 	}
 }

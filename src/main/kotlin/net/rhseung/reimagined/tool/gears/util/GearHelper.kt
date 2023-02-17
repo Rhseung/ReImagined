@@ -138,15 +138,17 @@ object GearHelper {
 	
 	fun getAttackDamage(
 		stack: ItemStack,
+		type: GearType?
 	): Float {
 		return if (isBroken(stack)) BROKEN_ATTACK_DAMAGE
-		else getStat(stack, Stat.ATTACK_DAMAGE)
+		else (getStat(stack, Stat.ATTACK_DAMAGE).toDouble() + (type?.baseAttackDamage ?: 0.0)).toFloat()
 	}
 	
 	fun getAttackSpeed(
 		stack: ItemStack,
+		type: GearType?
 	): Float {
-		return getStat(stack, Stat.ATTACK_SPEED)
+		return (getStat(stack, Stat.ATTACK_SPEED).toDouble() + (type?.baseAttackSpeed ?: 0.0)).toFloat()
 	}
 	
 	fun getEnchantability(
@@ -193,7 +195,7 @@ object GearHelper {
 		slot: EquipmentSlot,
 		attackDamageModifierId: UUID,
 		attackSpeedModifierId: UUID,
-		type: GearType?,
+		type: GearType?
 	): Multimap<EntityAttribute, EntityAttributeModifier> {
 		val builder = ImmutableMultimap.builder<EntityAttribute, EntityAttributeModifier>()
 		
@@ -202,7 +204,7 @@ object GearHelper {
 				EntityAttributes.GENERIC_ATTACK_DAMAGE, EntityAttributeModifier(
 					attackDamageModifierId,
 					TOOL_MODIFIER_NAME,
-					getAttackDamage(stack).toDouble(),
+					getAttackDamage(stack, type).toDouble(),
 					EntityAttributeModifier.Operation.ADDITION
 				)
 			)
@@ -211,7 +213,7 @@ object GearHelper {
 				EntityAttributes.GENERIC_ATTACK_SPEED, EntityAttributeModifier(
 					attackSpeedModifierId,
 					TOOL_MODIFIER_NAME,
-					type.baseAttackSpeed + getAttackSpeed(stack).toDouble() - 4.0,
+					getAttackSpeed(stack, type).toDouble() - 4.0,
 					EntityAttributeModifier.Operation.ADDITION
 				)
 			)

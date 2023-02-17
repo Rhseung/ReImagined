@@ -13,13 +13,13 @@ import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.tool.parts.util.PartHelper
 import net.rhseung.reimagined.utils.Text.pathName
 
-class PickaxeHeadPart(
+class AxeHeadPart constructor (
 	override val material: Material
 ) : BasicPartItem() {
 	override val type = Companion.type
 	override val includeStats = type.includeStats
 	
 	companion object {
-		val type = PartType.PICKAXE_HEAD
+		val type = PartType.AXE_HEAD
 	}
 }
