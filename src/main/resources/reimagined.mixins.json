@@ -7,6 +7,7 @@
 		"compat.DiggerEnchantmentTargetMixin",
 		"compat.EnchantabilityMixin",
 		"compat.ItemStackMixin",
+		"compat.WeaponEnchantmentTargetMixin",
 		"tooltip.GetTooltipDataMixin",
 		"tooltip.TooltipDataToComponentMixin"
 	],

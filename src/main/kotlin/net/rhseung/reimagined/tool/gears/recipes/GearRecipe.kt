@@ -45,6 +45,7 @@ class GearRecipe constructor(
 		for (gearType in GearType.getValues()) {
 			if (gearType.includeParts.toSet() == hasParts.filterValues { it }.keys) {
 				selectedType = gearType
+				println("selectedType: $selectedType, sword: ${GearType.SWORD.includeParts}")
 				break
 			}
 			else {

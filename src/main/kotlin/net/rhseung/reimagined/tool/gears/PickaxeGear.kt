@@ -5,8 +5,8 @@ import net.rhseung.reimagined.tool.gears.enums.GearType
 
 class PickaxeGear
 : BasicMiningGearItem() { // todo: trait 적용
-	override val type = GearType.PICKAXE
-	override val includeStats = type.includeStats
-	override val includeParts= type.includeParts
-	override val effectiveBlocks = type.effectiveBlocks
+//	override val type: GearType? = null
+//	override val includeStats = type?.includeStats
+//	override val includeParts= type?.includeParts
+//	override val effectiveBlocks = type?.effectiveBlocks
 }

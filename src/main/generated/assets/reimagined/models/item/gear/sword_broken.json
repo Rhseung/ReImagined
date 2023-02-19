@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "reimagined:item/gear/sword/handle_broken",
+    "layer1": "reimagined:item/gear/sword/head_broken",
+    "layer2": "reimagined:item/gear/sword/binding_broken"
+  }
+}

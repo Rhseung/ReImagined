@@ -34,4 +34,9 @@ object Math {
 		val p = 10F.pow(n)
 		return (this * p).roundToInt() / p
 	}
+	
+	fun Double.roundTo(n: Int = 0): Double {
+		val p = 10.0.pow(n)
+		return (this * p).roundToInt() / p
+	}
 }

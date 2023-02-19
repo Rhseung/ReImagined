@@ -1,0 +1,36 @@
+package net.rhseung.reimagined.mixin.compat;
+
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.minecraft.item.Item;
+import net.rhseung.reimagined.tool.gears.base.BasicGearItem;
+import net.rhseung.reimagined.tool.gears.base.BasicMiningGearItem;
+import net.rhseung.reimagined.tool.gears.base.BasicWeaponGearItem;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
+/**
+ * $1: ARMOR
+ * $2: BREAKABLE
+ * $3: BOW
+ * $4: WEARABLE
+ * $5: CROSSBOW
+ * $6: VANISHABLE
+ * $7: ARMOR_FEET
+ * $8: ARMOR_LEGS
+ * $9: ARMOR_CHEST
+ * $10: ARMOR_HEAD
+ * $11: WEAPON
+ * $12: DIGGER
+ * $13: FISHING_ROD
+ * $14: TRIDENT
+ */
+@Mixin(targets = {"net/minecraft/enchantment/EnchantmentTarget$11"})
+public abstract class WeaponEnchantmentTargetMixin {
+    @ModifyReturnValue(
+        method = "isAcceptableItem(Lnet/minecraft/item/Item;)Z",
+        at = @At("RETURN")
+    )
+    private boolean isAcceptableItem_mixin(boolean original, Item item) {
+        return original || item instanceof BasicWeaponGearItem;
+    }
+}

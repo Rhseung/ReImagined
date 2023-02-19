@@ -10,6 +10,7 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.enchantment.Enchantments
 import net.minecraft.enchantment.UnbreakingEnchantment
+import net.minecraft.entity.EntityGroup
 import net.minecraft.entity.EquipmentSlot
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.attribute.EntityAttribute
@@ -18,6 +19,7 @@ import net.minecraft.entity.attribute.EntityAttributes
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
+import net.minecraft.recipe.Ingredient
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.registry.tag.TagKey
@@ -34,6 +36,8 @@ import net.rhseung.reimagined.registration.ModItems
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.gears.base.BasicGearItem
+import net.rhseung.reimagined.tool.gears.base.BasicMiningGearItem
+import net.rhseung.reimagined.tool.gears.base.BasicWeaponGearItem
 import net.rhseung.reimagined.tool.gears.enums.GearType
 import net.rhseung.reimagined.tool.gears.util.GearData.NBT_ROOT
 import net.rhseung.reimagined.tool.gears.util.GearData.putPartIfMissing
@@ -42,6 +46,7 @@ import net.rhseung.reimagined.tool.parts.base.BasicPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Color
 import net.rhseung.reimagined.utils.Color.Companion.gradient
+import net.rhseung.reimagined.utils.Math.pow
 import net.rhseung.reimagined.utils.Sound
 import net.rhseung.reimagined.utils.Text.displayName
 import net.rhseung.reimagined.utils.Text.getEnchantmentFullName
@@ -58,15 +63,12 @@ object GearHelper {
 	private val REACH_DISTANCE_MODIFIER_ID: UUID = UUID.fromString("5879BECA-71AF-4D6A-9B2D-B59EF091B395")
 	private val MINING_SPEED_MODIFIER_ID: UUID = UUID.fromString("A0B5EBF0-D474-48CF-9997-54A21029F2D3")
 	
-	private const val TOOL_MODIFIER_NAME = "Tool modifier"
-	private const val WEAPON_MODIFIER_NAME = "Weapon modifier"
-	
 	/**
 	 * gets the NBT data
 	 */
 	fun getStat(
 		stack: ItemStack,
-		stat: Stat,
+		stat: Stat
 	): Float {
 		val statCompound = GearData.getData(stack, GearData.NBT_ROOT_STATS)
 		
@@ -124,30 +126,40 @@ object GearHelper {
 		state: BlockState? = null,
 		effectiveBlocks: TagKey<Block>? = null,
 		getMax: Boolean = false,
+		value: Float = getStat(stack, Stat.MINING_SPEED)
 	): Float {
 		return if (getMax) {
 			// getMiningSpeed(stack, getMax = true)
-			getStat(stack, Stat.MINING_SPEED)
-		}
-		else {
+			val level = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, stack)
+			value + if (level > 0) level.pow(2) + 1 else 0
+		} else {
 			// getMiningSpeed(stack, state, effectiveBlocks)
-			if (isBroken(stack)) BROKEN_MINING_SPEED
-			else if (state!!.isIn(effectiveBlocks!!)) getStat(stack, Stat.MINING_SPEED)
-			else 1.0F
+			if (isBroken(stack))
+				BROKEN_MINING_SPEED
+			else if (effectiveBlocks != null && state!!.isIn(effectiveBlocks))
+				value
+			else
+				1.0F
 		}
 	}
 	
 	fun getAttackDamage(
 		stack: ItemStack,
-		type: GearType?
+		type: GearType?,
+		getMax: Boolean = false
 	): Float {
-		return if (isBroken(stack)) BROKEN_ATTACK_DAMAGE
-		else (getStat(stack, Stat.ATTACK_DAMAGE).toDouble() + (type?.baseAttackDamage ?: 0.0)).toFloat()
+		return if (getMax) {
+			(getStat(stack, Stat.ATTACK_DAMAGE).toDouble() + (type?.baseAttackDamage ?: 0.0)).toFloat() + 1.0F + EnchantmentHelper.getAttackDamage(stack,
+				EntityGroup.DEFAULT)
+		} else {
+			if (isBroken(stack)) BROKEN_ATTACK_DAMAGE
+			else (getStat(stack, Stat.ATTACK_DAMAGE).toDouble() + (type?.baseAttackDamage ?: 0.0)).toFloat()
+		}
 	}
 	
 	fun getAttackSpeed(
 		stack: ItemStack,
-		type: GearType?
+		type: GearType?,
 	): Float {
 		return (getStat(stack, Stat.ATTACK_SPEED).toDouble() + (type?.baseAttackSpeed ?: 0.0)).toFloat()
 	}
@@ -196,32 +208,38 @@ object GearHelper {
 		slot: EquipmentSlot,
 		attackDamageModifierId: UUID,
 		attackSpeedModifierId: UUID,
-		type: GearType?
+		type: GearType?,
 	): Multimap<EntityAttribute, EntityAttributeModifier> {
 		val builder = ImmutableMultimap.builder<EntityAttribute, EntityAttributeModifier>()
+		if (stack.item !is BasicGearItem) return builder.build()
 		
-		if (isNotBroken(stack) && slot == EquipmentSlot.MAINHAND && type != null) {
-			builder.put(
-				EntityAttributes.GENERIC_ATTACK_DAMAGE, EntityAttributeModifier(
-					attackDamageModifierId,
-					TOOL_MODIFIER_NAME,
-					getAttackDamage(stack, type).toDouble(),
-					EntityAttributeModifier.Operation.ADDITION
+		val modifierName = (stack.item as BasicGearItem).modifierName
+		if (modifierName == BasicGearItem.modifierName)
+			error("BasicGearItem.modifierName($modifierName) should not be modified")
+		
+		if (slot == EquipmentSlot.MAINHAND) {
+			if (isNotBroken(stack) && type != null) {
+				builder.put(
+					EntityAttributes.GENERIC_ATTACK_DAMAGE, EntityAttributeModifier(
+						attackDamageModifierId,
+						modifierName,
+						getAttackDamage(stack, type).toDouble(),
+						EntityAttributeModifier.Operation.ADDITION
+					)
 				)
-			)
-			
-			builder.put(
-				EntityAttributes.GENERIC_ATTACK_SPEED, EntityAttributeModifier(
-					attackSpeedModifierId,
-					TOOL_MODIFIER_NAME,
-					getAttackSpeed(stack, type).toDouble() - 4.0,
-					EntityAttributeModifier.Operation.ADDITION
+				
+				builder.put(
+					EntityAttributes.GENERIC_ATTACK_SPEED, EntityAttributeModifier(
+						attackSpeedModifierId,
+						modifierName,
+						getAttackSpeed(stack, type).toDouble() - 4.0,
+						EntityAttributeModifier.Operation.ADDITION
+					)
 				)
-			)
-			
-			// todofar: reach distance attribute도 추가하기
-			// todofar: WEAPON_MODIFIER_NAME 사용
-			// todo: how to make custom attribute?
+				
+				// todofar: reach distance attribute도 추가하기
+				// note: how to make custom attribute?
+			}
 		}
 		
 		return builder.build()
@@ -234,9 +252,15 @@ object GearHelper {
 		return Registry.register(Registries.ATTRIBUTE, id, attribute) as EntityAttribute
 	}
 	
-	fun getName(stack: ItemStack, type: GearType?): Text {
+	fun getName(
+		stack: ItemStack,
+		type: GearType?,
+	): Text {
 		if (type == null) return Text.literal("unknown")
-		return Text.translatable(stack.item.getTranslationKey(stack), getPart(stack, PartType.HEAD(type)).material.name.displayName())
+		return Text.translatable(
+			stack.item.getTranslationKey(stack),
+			getPart(stack, PartType.HEAD(type)).material.name.displayName()
+		)
 	}
 	
 	/**
@@ -410,8 +434,13 @@ object GearHelper {
 		includeParts: List<PartType>,
 		gearType: GearType?,
 	): Boolean {
-		if (gearType == null) return false
-		return getPart(stack, PartType.HEAD(gearType)).material.repairIngredient.test(ingredient)
+		return if (gearType == null) false
+		else {
+			val repairIngredient = getPart(stack, PartType.HEAD(gearType)).material.ingredient
+			
+			if (repairIngredient == null) false
+			else Ingredient.ofItems(repairIngredient).test(ingredient)
+		}
 	}
 	
 	fun isSuitableFor(
@@ -422,8 +451,9 @@ object GearHelper {
 		if (effectiveBlocks == null) return false
 		
 		val tier = getMiningTier(stack)
+		val maxTier = Material.getValues().maxOf { it.tier }
 		
-		for (i in Material.MAX_TIER downTo 1)
+		for (i in maxTier downTo 1) // STONE(1) 까지임, WOOD(0) 는 손과 같아서 따로 태그도 없음
 			if (tier < i && state.isIn(ModBlockTags.getTag(i))) return false
 		return state.isIn(effectiveBlocks)
 	}
@@ -480,6 +510,6 @@ object GearHelper {
 	fun isItemBarVisible(
 		stack: ItemStack,
 	): Boolean {
-		return getUsedDurability(stack) > 0
+		return 0 < getRemainDurability(stack) && getRemainDurability(stack) < getMaxDurability(stack)
 	}
 }

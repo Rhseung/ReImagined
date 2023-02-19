@@ -7,6 +7,7 @@ import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.parts.base.BasicPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Math.roundTo
+import net.rhseung.reimagined.utils.Math.sum
 import net.rhseung.reimagined.utils.Text.pathName
 
 object GearData {
@@ -16,7 +17,7 @@ object GearData {
 	
 	fun getData(
 		stack: ItemStack,
-		compoundKey: String
+		compoundKey: String,
 	): NbtCompound {
 		val root = stack.getOrCreateSubNbt(NBT_ROOT)
 		
@@ -29,31 +30,33 @@ object GearData {
 	
 	fun putStatIfMissing(
 		stack: ItemStack,
-		stat: Stat
+		stat: Stat,
+		defaultValue: Float? = null,
 	) {
 		val root = getData(stack, NBT_ROOT_STATS)
 		val compoundKey = stat.name.pathName()
 		
 		if (!root.contains(compoundKey)) {
-			root.putFloat(compoundKey, stat.defaultValue)
+			root.putFloat(compoundKey, defaultValue ?: stat.defaultValue)
 		}
 	}
 	
 	fun putStatIfMissing(
 		rootInput: NbtCompound,
-		stat: Stat
+		stat: Stat,
+		defaultValue: Float? = null,
 	) {
 		val root = rootInput.getCompound(NBT_ROOT_STATS)
 		val compoundKey = stat.name.pathName()
 		
 		if (!root.contains(compoundKey)) {
-			root.putFloat(compoundKey, stat.defaultValue)
+			root.putFloat(compoundKey, defaultValue ?: stat.defaultValue)
 		}
 	}
 	
 	fun writeStats(
 		stack: ItemStack,
-		vararg stats: Pair<Stat, Float>
+		vararg stats: Pair<Stat, Float>,
 	) {
 		val root = getData(stack, NBT_ROOT_STATS)
 		
@@ -65,7 +68,7 @@ object GearData {
 	
 	fun putPartIfMissing(
 		stack: ItemStack,
-		partType: PartType
+		partType: PartType,
 	) {
 		val root = getData(stack, NBT_ROOT_PARTS)
 		val compoundKey = partType.name.pathName()
@@ -77,7 +80,7 @@ object GearData {
 	
 	fun putPartIfMissing(
 		rootInput: NbtCompound,
-		partType: PartType
+		partType: PartType,
 	) {
 		val root = rootInput.getCompound(NBT_ROOT_PARTS)
 		val compoundKey = partType.name.pathName()
@@ -89,7 +92,7 @@ object GearData {
 	
 	fun writeParts(
 		stack: ItemStack,
-		vararg parts: BasicPartItem
+		vararg parts: BasicPartItem,
 	) {
 		val root = getData(stack, NBT_ROOT_PARTS)
 		
@@ -102,20 +105,25 @@ object GearData {
 	fun recalculate(
 		output: ItemStack,
 		includeStats: Set<Stat>,
-		vararg parts: BasicPartItem
+		vararg parts: BasicPartItem,
 	) {
 		for (stat in includeStats) {
 			var count = 0
-			var value = 0.0F
+			val values = mutableListOf<Float>()
 			
 			for (part in parts) {
 				if (part.includeStats.contains(stat)) {
 					count++
-					value += part.getStat(stat)
+					values += part.getStat(stat)
 				}
 			}
 			
-			writeStats(output, stat to (value / count).roundTo(2))
+			writeStats(output, stat to when (stat.calculateType) {
+				Stat.CalculateType.SUM -> values.reduce { acc, cur -> acc + cur }.roundTo(2)
+				Stat.CalculateType.MULTIPLY -> values.reduce { acc, cur -> acc * cur }.roundTo(2)
+				Stat.CalculateType.AVERAGE -> if (count == 0) stat.defaultValue
+											  else (values.reduce { acc, cur -> acc + cur } / count).roundTo(2)
+			})
 		}
 	}
 }

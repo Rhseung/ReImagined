@@ -1,107 +1,148 @@
 package net.rhseung.reimagined.tool
 
+import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
-import net.minecraft.recipe.Ingredient
 import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Color
 import net.rhseung.reimagined.utils.Math.pow
-import net.rhseung.reimagined.utils.Text.pathName
-import java.lang.Integer.min
+import net.rhseung.reimagined.utils.Math.roundTo
+import kotlin.math.max
+import kotlin.math.min
 
 enum class Material(
-	val color: Color,
+	var canParts: Set<PartType>,
+	val ingredient: ItemConvertible? = null,
+	val color: Color = Color.WHITE,
+	var tier: Int = -1,
+	var weight: Int = -1,
+	var hardness: Int = -1,
 	
-	val stat: Int,
-	val weight: Int,
 	val trait: Trait? = null,
-	var canParts: MutableSet<PartType>,
-	
 	val isMetal: Boolean = true,
-	
-	val repairIngredient: Ingredient,
-	
 	/** for not vanilla materials */
-	val worldSpawn: Boolean = false
+	val worldSpawn: Boolean = false,
 ) {
 	DUMMY(
-		color = Color.WHITE, stat = -1, weight = -1, isMetal = false,
-		canParts = mutableSetOf(*PartType.HEAD, PartType.BINDING, PartType.HANDLE),
-		repairIngredient = Ingredient.ofItems(Items.CHAIN)
+		setOf(
+			*PartType.HEAD,
+			PartType.BINDING,
+			PartType.HANDLE
+		)
 	),
-	WOOD( /** durability: 32 */
-		color = Color(150, 116, 65), stat = 0, weight = 1, isMetal = false,
-		canParts = mutableSetOf(*PartType.HEAD, PartType.HANDLE),
-		repairIngredient = Ingredient.ofItems(Items.OAK_PLANKS)
+	
+	@Property(tier = 0, weight = 0, hardness = 1)
+	STRING(
+		setOf(
+			PartType.BINDING
+		), Items.STRING, Color.STRING
 	),
-	STONE( /** durability: 88 */
-		color = Color(149, 145, 141), stat = 1, weight = 2, isMetal = false,
-		canParts = mutableSetOf(*PartType.HEAD, PartType.HANDLE),
-		repairIngredient = Ingredient.ofItems(Items.COBBLESTONE)
+	
+	@Property(tier = 0, weight = 0, hardness = 1)
+	VINE(
+		setOf(
+			PartType.BINDING
+		), Items.VINE, Color.VINE
 	),
-	COPPER( /** durability: 320 */
-		color = Color(202, 118, 91), stat = 2, weight = 4,
-		canParts = mutableSetOf(*PartType.HEAD, PartType.BINDING, PartType.HANDLE),
-		repairIngredient = Ingredient.ofItems(Items.COPPER_INGOT)
+	
+	@Property(tier = 0, weight = 1, hardness = 3)
+	WOOD(
+		setOf(
+			*PartType.HEAD,
+			PartType.BINDING,
+			PartType.HANDLE
+		), Items.OAK_PLANKS, Color.WOOD
 	),
-	IRON( /** durability: 808 */
-		color = Color(215, 215, 215), stat = 3, weight = 5,
-		canParts = mutableSetOf(*PartType.HEAD, PartType.BINDING, PartType.HANDLE),
-		repairIngredient = Ingredient.ofItems(Items.IRON_INGOT)
+	
+	@Property(tier = 1, weight = 2, hardness = 2)
+	STONE(
+		setOf(
+			*PartType.HEAD,
+			PartType.HANDLE
+		), Items.COBBLESTONE, Color.STONE
 	),
-	DIAMOND( /** durability: 1632 */
-		color = Color(43, 199, 172), stat = 4, weight = 3,
-		canParts = mutableSetOf(*PartType.HEAD, PartType.BINDING, PartType.HANDLE),
-		repairIngredient = Ingredient.ofItems(Items.DIAMOND)
-	),  // todofar: 다이아몬드는 보석류이므로 나중에 없앨거임
+	
+	@Property(tier = 2, weight = 5, hardness = 8)
+	COPPER(
+		setOf(
+			*PartType.HEAD,
+			PartType.BINDING,
+			PartType.HANDLE
+		), Items.COPPER_INGOT, Color.COPPER
+	),
+	
+	@Property(tier = 3, weight = 4, hardness = 20)
+	IRON(
+		setOf(
+			*PartType.HEAD,
+			PartType.BINDING,
+			PartType.HANDLE
+		), Items.IRON_INGOT, Color.IRON
+	),
+	
+	@Property(tier = 4, weight = 2, hardness = 60)
+	DIAMOND(
+		setOf(
+			*PartType.HEAD,
+			PartType.BINDING,
+			PartType.HANDLE
+		), Items.DIAMOND, Color.DIAMOND
+	),
+	// todofar: 다이아몬드는 보석류이므로 나중에 없앨거임
 	//      - 강철로 할 것 같음
 	//      - 용광로(->합금제조기)랑 훈연기(->코크오븐) 오버라이딩해서 만들 예정
-	NETHERITE( /** durability: 3160 */
-		color = Color(134, 123, 134), stat = 5, weight = 5, trait = Trait.Fireproof,
-		canParts = mutableSetOf(*PartType.HEAD, PartType.BINDING, PartType.HANDLE),
-		repairIngredient = Ingredient.ofItems(Items.NETHERITE_INGOT)
+	
+	@Property(tier = 5, weight = 4, hardness = 75)
+	NETHERITE(
+		setOf(
+			*PartType.HEAD,
+			PartType.BINDING,
+			PartType.HANDLE
+		), Items.NETHERITE_INGOT, Color.NETHERITE
 	);
 	
-	fun getStat(s: Stat): Float {
-		return when (s) {
-			Stat.DURABILITY -> if (stat == -1) s.defaultValue else getDurability()
-			Stat.ATTACK_DAMAGE -> if (stat == -1) s.defaultValue else getAttackDamage()
-			Stat.ATTACK_SPEED -> if (stat == -1) s.defaultValue else getAttackSpeed()
-			Stat.MINING_TIER -> if (stat == -1) s.defaultValue else getMiningTier()
-			Stat.MINING_SPEED -> if (stat == -1) s.defaultValue else getMiningSpeed()
-			Stat.ENCHANTABILITY -> if (stat == -1) s.defaultValue else getEnchantability()
-			// todofar: 다른 스탯 cast도 지원하기
+	init {
+		this.declaringJavaClass.getField(name).annotations.forEach { annotation ->
+			when (annotation) {
+				is Property -> {
+					tier = annotation.tier
+					weight = annotation.weight
+					hardness = annotation.hardness
+				}
+			}
 		}
 	}
 	
-	fun getDurability() = (24 * stat.pow(3) + 32 * weight).toFloat()
-	fun getAttackDamage() = 1.0F * stat + 0.2F * weight
-	fun getAttackSpeed() = -0.1F * (weight - 3)
-	fun getMiningTier() = stat.toFloat()
-	fun getMiningSpeed() = 2 + 2.5F * stat - 0.3F * weight
-	fun getEnchantability() = min(7 + 3*((stat + weight) % 5) - (0.2F * weight).toInt(), 25).toFloat()
-	// todofar: 다른 스탯 공식도 만들기
-	
-	/**  - stats
-	 *   durability(s, w) = 24s^2.5 + 32w
-	 *   attack_damage(s, w) = 0.6s + 0.1w
-	 *   attack_speed(s, w) = 1.6 - 0.6w
-	 *   mining_tier(s, w) = s
-	 *   mining_speed(s, w) = 1 + 2s - 0.4w
-	 *   enchantability(s, w) = min(7 + 3((s + w) % 5) - int(0.2w), 25)
-	 */
+	fun getStat(s: Stat): Float {
+		return if (this == DUMMY) s.defaultValue
+		else when (s) {
+			Stat.DURABILITY -> max((-15.4079
+					+ 139.596*tier - 52.6629*tier.pow(2)
+					- 1.42673*weight - 0.183615 * weight.pow(2)
+					+ 12.7571*hardness + 0.30522*hardness.pow(2)
+			).roundTo(0), 10.0)
+			
+			Stat.ATTACK_DAMAGE -> 1.3*tier + 0.4*weight
+			
+			Stat.ATTACK_SPEED -> 0.1*(2 - weight)
+			
+			Stat.MINING_TIER -> tier
+			
+			Stat.MINING_SPEED -> 3 + 3*tier - 0.3*weight
+			
+			Stat.ENCHANTABILITY -> min(7 - 0.5*tier + 2.5*(4 - weight), 25.0)
+		}.toFloat()
+	}
 	
 	companion object {
-		val MAX_TIER = 5
-		
 		fun get(miningLevel: Int) = when (miningLevel) {
+			-1 -> DUMMY
 			0 -> WOOD
 			1 -> STONE
 			2 -> COPPER
 			3 -> IRON
 			4 -> DIAMOND
 			5 -> NETHERITE
-			else -> DUMMY
-			// todofar: 다른 material도 지원하기
+			else -> error("Invalid mining level: $miningLevel")
 		}
 		
 		fun getColor(miningLevel: Int): Color {

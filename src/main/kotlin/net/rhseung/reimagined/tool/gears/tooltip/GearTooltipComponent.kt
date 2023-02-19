@@ -6,6 +6,7 @@ import net.minecraft.client.gui.tooltip.TooltipComponent
 import net.minecraft.client.render.item.ItemRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.enchantment.EnchantmentHelper
+import net.minecraft.entity.player.PlayerEntity
 import net.rhseung.reimagined.tool.Material.Companion.getColor
 import net.rhseung.reimagined.utils.Tooltip.Draw
 import net.rhseung.reimagined.tool.gears.util.GearHelper
@@ -22,7 +23,7 @@ import java.lang.Integer.max
 class GearTooltipComponent constructor(
 	private val data: GearTooltipData,
 ) : TooltipComponent {
-	val attackDamage = GearHelper.getAttackDamage(data.stack, data.gear.type).removeZero().toText()
+	val attackDamage = GearHelper.getAttackDamage(data.stack, data.gear.type, getMax = true).removeZero().toText()
 	val attackSpeed = GearHelper.getAttackSpeed(data.stack, data.gear.type).round(1).toText()
 	val miningSpeed = GearHelper.getMiningSpeed(data.stack, getMax = true).removeZero().toText()
 	val miningTier =

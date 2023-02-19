@@ -17,11 +17,9 @@ import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.utils.Text.pathName
 
 object ModItems {
-	val GEARS = GearType.getValues()
-		.associateWith { RegistryHelper.registerGear(it) }
+	val GEARS = GearType.getValues().associateWith { RegistryHelper.registerGear(it) }
+	val GEARS_LIST = GEARS.values.toList()
 	
-	var GEARS_LIST = GEARS.values.toList()
-	
-	val PARTS: Map<PartType, List<BasicPartItem>> = PartType.getValues()
-		.associateWith { RegistryHelper.registerParts(it) }
+	val PARTS = PartType.getValues().associateWith { RegistryHelper.registerParts(it) }
+	val PARTS_LIST = PARTS.values.toList().flatten()
 }

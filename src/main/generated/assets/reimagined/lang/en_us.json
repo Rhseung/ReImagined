@@ -3,6 +3,7 @@
   "item.reimagined.gear.hoe": "%s Hoe",
   "item.reimagined.gear.pickaxe": "%s Pickaxe",
   "item.reimagined.gear.shovel": "%s Shovel",
+  "item.reimagined.gear.sword": "%s Sword",
   "item.reimagined.parts.axe_head_copper": "Copper Axe Head Part",
   "item.reimagined.parts.axe_head_diamond": "Diamond Axe Head Part",
   "item.reimagined.parts.axe_head_iron": "Iron Axe Head Part",
@@ -13,6 +14,9 @@
   "item.reimagined.parts.binding_diamond": "Diamond Binding Part",
   "item.reimagined.parts.binding_iron": "Iron Binding Part",
   "item.reimagined.parts.binding_netherite": "Netherite Binding Part",
+  "item.reimagined.parts.binding_string": "String Binding Part",
+  "item.reimagined.parts.binding_vine": "Vine Binding Part",
+  "item.reimagined.parts.binding_wood": "Wood Binding Part",
   "item.reimagined.parts.handle_copper": "Copper Handle Part",
   "item.reimagined.parts.handle_diamond": "Diamond Handle Part",
   "item.reimagined.parts.handle_iron": "Iron Handle Part",
@@ -36,5 +40,11 @@
   "item.reimagined.parts.shovel_head_iron": "Iron Shovel Head Part",
   "item.reimagined.parts.shovel_head_netherite": "Netherite Shovel Head Part",
   "item.reimagined.parts.shovel_head_stone": "Stone Shovel Head Part",
-  "item.reimagined.parts.shovel_head_wood": "Wood Shovel Head Part"
+  "item.reimagined.parts.shovel_head_wood": "Wood Shovel Head Part",
+  "item.reimagined.parts.sword_head_copper": "Copper Sword Head Part",
+  "item.reimagined.parts.sword_head_diamond": "Diamond Sword Head Part",
+  "item.reimagined.parts.sword_head_iron": "Iron Sword Head Part",
+  "item.reimagined.parts.sword_head_netherite": "Netherite Sword Head Part",
+  "item.reimagined.parts.sword_head_stone": "Stone Sword Head Part",
+  "item.reimagined.parts.sword_head_wood": "Wood Sword Head Part"
 }

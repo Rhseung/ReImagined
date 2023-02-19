@@ -5,8 +5,5 @@ import net.minecraft.item.ItemStack
 import net.rhseung.reimagined.tool.gears.util.GearHelper
 
 open class BasicMiningGearItem : BasicGearItem() {
-	override fun isSuitableFor(
-		stack: ItemStack,
-		state: BlockState,
-	): Boolean = GearHelper.isSuitableFor(stack, state, effectiveBlocks)
+	override val modifierName = "Tool modifier"
 }

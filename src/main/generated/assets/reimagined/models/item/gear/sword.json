@@ -1,0 +1,16 @@
+{
+  "parent": "minecraft:item/handheld",
+  "overrides": [
+    {
+      "model": "reimagined:item/gear/sword_broken",
+      "predicate": {
+        "broken": 1
+      }
+    }
+  ],
+  "textures": {
+    "layer0": "reimagined:item/gear/sword/handle",
+    "layer1": "reimagined:item/gear/sword/head",
+    "layer2": "reimagined:item/gear/sword/binding"
+  }
+}

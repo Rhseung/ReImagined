@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "result": "reimagined:parts/pickaxe_head_netherite"
+}

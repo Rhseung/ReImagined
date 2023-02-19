@@ -67,9 +67,9 @@ class ModModelGenerator(output: FabricDataOutput) : FabricModelProvider(output) 
 	private fun ItemModelGenerator.generateGear(gear: BasicGearItem) {
 		val texturePaths = mutableListOf<String>()
 		
-		gear.type!!.includeParts.forEach { partType ->
+		gear.type.includeParts.forEach { partType ->
 			texturePaths.add(
-				"gear/${gear.type!!.name.pathName()}/" +
+				"gear/${gear.type.name.pathName()}/" +
 						partType.name.split("_").last().pathName()
 			)
 		}

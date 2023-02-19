@@ -32,7 +32,7 @@ object RegistryHelper {
 	}
 	
 	fun registerGear(gearType: GearType): BasicGearItem {
-		return registerItem("gear/${gearType.name.pathName()}", gearType.instance())
+		return registerItem("gear/${gearType.name.pathName()}", gearType.instance)
 	}
 	
 	fun registerParts(partType: PartType): List<BasicPartItem> {
@@ -41,10 +41,13 @@ object RegistryHelper {
 		for (material in Material.getValues()) {
 			if (partType !in material.canParts) continue
 			
-			ret.add(registerItem(
-				"parts/${partType.name.pathName()}_${material.name.pathName()}",
-				partType.instance(material), ModItemGroups.PARTS
-			))
+			ret.add(
+				registerItem(
+					"parts/${partType.name.pathName()}_${material.name.pathName()}",
+					partType.instance(material),
+					ModItemGroups.PARTS
+				)
+			)
 		}
 		
 		return ret

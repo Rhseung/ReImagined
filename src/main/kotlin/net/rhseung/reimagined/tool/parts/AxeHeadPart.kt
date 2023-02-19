@@ -15,9 +15,7 @@ import net.rhseung.reimagined.utils.Text.pathName
 
 class AxeHeadPart constructor (
 	override val material: Material
-) : BasicPartItem() {
-	override val type = Companion.type
-	override val includeStats = type.includeStats
+) : BasicPartItem(material) {
 	
 	companion object {
 		val type = PartType.AXE_HEAD

@@ -21,10 +21,15 @@ import net.rhseung.reimagined.tool.parts.base.BasicPartItem
 import net.rhseung.reimagined.tool.parts.enums.PartType
 
 open class BasicGearItem : Item(Settings().maxCount(1)), Vanishable {
-	open val type: GearType? = null
-	open val includeStats = if (type == null) emptySet() else type!!.includeStats
-	open val includeParts= if (type == null) emptyList() else type!!.includeParts
-	open val effectiveBlocks = type?.effectiveBlocks
+	open lateinit var type: GearType
+	open val includeStats by lazy { type.includeStats }
+	open val includeParts by lazy { type.includeParts }
+	open val effectiveBlocks by lazy { type.effectiveBlocks }
+	
+	open val modifierName = Companion.modifierName
+	companion object {
+		const val modifierName = "?? modifier"
+	}
 	
 	open fun getParts(stack: ItemStack): Map<PartType, BasicPartItem> = GearHelper.getParts(stack, includeParts)
 	open fun getPart(
@@ -52,6 +57,11 @@ open class BasicGearItem : Item(Settings().maxCount(1)), Vanishable {
 	
 	open fun isNotBroken(stack: ItemStack): Boolean =
 		GearHelper.isNotBroken(stack)
+	
+	override fun isSuitableFor(
+		stack: ItemStack,
+		state: BlockState,
+	): Boolean = GearHelper.isSuitableFor(stack, state, effectiveBlocks)
 	
 	override fun getAttributeModifiers(
 		stack: ItemStack,

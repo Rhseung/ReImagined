@@ -84,6 +84,16 @@ class Color {
 	}
 	
 	companion object {
+		val WOOD = Color(150, 116, 65)
+		val STONE = Color(149, 145, 141)
+		val COPPER = Color(202, 118, 91)
+		val IRON = Color(215, 215, 215)
+		val DIAMOND = Color(43, 199, 172)
+		val NETHERITE = Color(134, 123, 134)
+		
+		val STRING = Color(255, 255, 255)
+		val VINE = Color(52, 87, 25)
+		
 		val WHITE = Color(255, 255, 255)
 		val GRAY = Color(170, 170, 170)
 		val DARK_GRAY = Color(85, 85, 85)

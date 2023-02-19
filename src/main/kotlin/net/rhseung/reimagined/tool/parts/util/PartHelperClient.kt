@@ -9,12 +9,8 @@ import net.rhseung.reimagined.utils.Texture
 object PartHelperClient {
 	
 	fun textureProcess() {
-		ModItems.PARTS.values.forEach { valueList ->
-			valueList.forEach { value ->
-				Texture.tintTexture({ stack, layerIndex ->
-					value.material.color
-				}, value)
-			}
+		ModItems.PARTS_LIST.forEach {
+			Texture.tintTexture({ _, _ -> it.material.color }, it)
 		}
 	}
 }

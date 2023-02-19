@@ -3,40 +3,40 @@ package net.rhseung.reimagined.tool
 import net.rhseung.reimagined.utils.Color
 import net.minecraft.item.ItemStack
 import net.minecraft.text.MutableText
-import net.rhseung.reimagined.tool.Material.Companion.getColor
 import net.rhseung.reimagined.tool.gears.util.GearHelper.getStat
 import net.rhseung.reimagined.utils.Text.displayName
 import net.rhseung.reimagined.utils.Text.round
 import net.rhseung.reimagined.utils.Tooltip.coloring
 
 enum class Stat constructor(
+	val calculateType: CalculateType,
 	val color: Color,
 	val isInt: Boolean = false,
 	val defaultValue: Float,
 ) {
-	DURABILITY(
+	DURABILITY(CalculateType.SUM,
 		Color.DARK_GREEN,
 		isInt = true,
 		defaultValue = 1.0F
 	),
-	ATTACK_DAMAGE(
+	ATTACK_DAMAGE(CalculateType.AVERAGE,
 		Color.SMOOTH_RED,
 		defaultValue = 0.0F
 	),
-	ATTACK_SPEED(
+	ATTACK_SPEED(CalculateType.SUM,
 		Color.SMOOTH_VIOLET,
 		defaultValue = 1.0F
 	),
-	MINING_TIER(
+	MINING_TIER(CalculateType.SUM,
 		Color.WHITE,
 		isInt = true,
 		defaultValue = 0.0F
 	),
-	MINING_SPEED(
+	MINING_SPEED(CalculateType.AVERAGE,
 		Color.SMOOTH_BLUE,
 		defaultValue = 1.0F
 	),
-	ENCHANTABILITY(
+	ENCHANTABILITY(CalculateType.AVERAGE,
 		Color.GOLD,
 		isInt = true,
 		defaultValue = 10.0F
@@ -67,5 +67,11 @@ enum class Stat constructor(
 		)
 		// todofar: Text.translatable
 		// todofar: mining tier처럼 알파벳으로 출력해야하는 상황에 대처하는 방안 만들기
+	}
+	
+	enum class CalculateType {
+		SUM,
+		AVERAGE,
+		MULTIPLY;
 	}
 }

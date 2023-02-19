@@ -10,15 +10,11 @@ class ModLanguageGenerator(
 ) : FabricLanguageProvider(dataOutput, "en_us") {
 	
 	override fun generateTranslations(translationBuilder: TranslationBuilder) {
-		ModItems.PARTS.values.forEach { they ->
-			they.forEach {
-				translationBuilder.add(
-					it, "${it.material.name.displayName()} ${it.type!!.name.displayName()} Part"
-				)
-			}
+		ModItems.PARTS_LIST.forEach {
+			translationBuilder.add(it, "${it.material.name.displayName()} ${it.type!!.name.displayName()} Part")
 		}
 		ModItems.GEARS_LIST.forEach {
-			translationBuilder.add(it, "%s " + it.type!!.name.displayName())
+			translationBuilder.add(it, "%s " + it.type.name.displayName())
 		}
 	}
 }

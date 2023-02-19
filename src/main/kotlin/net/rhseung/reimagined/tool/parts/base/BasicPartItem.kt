@@ -14,10 +14,9 @@ import net.rhseung.reimagined.tool.parts.enums.PartType
 import net.rhseung.reimagined.tool.parts.util.PartHelper
 import net.rhseung.reimagined.utils.Text.pathName
 
-open class BasicPartItem : Item(Settings()) {
-	open val material = Material.DUMMY
-	open val includeStats = setOf<Stat>()
-	open val type: PartType? = null
+open class BasicPartItem(open val material: Material) : Item(Settings()) {
+	open lateinit var type: PartType
+	open val includeStats by lazy { type.includeStats }
 	
 	fun getStat(stat: Stat): Float {
 		return material.getStat(stat)
