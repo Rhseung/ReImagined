@@ -2,7 +2,7 @@
   "parent": "minecraft:item/handheld",
   "textures": {
     "layer0": "reimagined:item/gear/pickaxe/handle_broken",
-    "layer1": "reimagined:item/gear/pickaxe/head_broken",
+    "layer1": "reimagined:item/gear/pickaxe/pickaxehead_broken",
     "layer2": "reimagined:item/gear/pickaxe/binding_broken"
   }
 }

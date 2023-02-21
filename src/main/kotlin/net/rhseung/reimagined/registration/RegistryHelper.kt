@@ -5,18 +5,19 @@ import net.minecraft.block.Block
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
+import net.minecraft.recipe.RecipeSerializer
+import net.minecraft.recipe.RecipeType
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 import net.rhseung.reimagined.ReImagined
 import net.rhseung.reimagined.tool.Material
-import net.rhseung.reimagined.tool.gears.base.BasicGearItem
-import net.rhseung.reimagined.tool.gears.enums.GearType
-import net.rhseung.reimagined.tool.parts.PickaxeHeadPart
-import net.rhseung.reimagined.tool.parts.base.BasicPartItem
-import net.rhseung.reimagined.tool.parts.enums.PartType
+import net.rhseung.reimagined.tool.gears.Gear
+import net.rhseung.reimagined.tool.parts.Part
 import net.rhseung.reimagined.utils.Text.pathName
-import kotlin.reflect.full.primaryConstructor
+import net.rhseung.reimagined.utils.Utils.createInstance
+import net.rhseung.reimagined.utils.Utils.getClassName
+import kotlin.reflect.KClass
 
 object RegistryHelper {
 	fun <T : Item> registerItem(
@@ -28,23 +29,25 @@ object RegistryHelper {
 			ItemGroupEvents.modifyEntriesEvent(group)
 				.register(ItemGroupEvents.ModifyEntries { entries -> entries.add(item) })
 		}
+		
+		println("Registering item: $item, Identifier: ${Identifier.of(ReImagined.MOD_ID, path)}")
 		return Registry.register(Registries.ITEM, Identifier.of(ReImagined.MOD_ID, path), item)
 	}
 	
-	fun registerGear(gearType: GearType): BasicGearItem {
-		return registerItem("gear/${gearType.name.pathName()}", gearType.instance)
+	fun registerGear(gear: Gear): Gear {
+		return registerItem("gear/${gear.className.pathName()}", gear)
 	}
 	
-	fun registerParts(partType: PartType): List<BasicPartItem> {
-		val ret = mutableListOf<BasicPartItem>()
+	fun registerParts(part: KClass<out Part>): List<Part> {
+		val ret = mutableListOf<Part>()
 		
 		for (material in Material.getValues()) {
-			if (partType !in material.canParts) continue
+			if (part !in material.canParts) continue
 			
 			ret.add(
 				registerItem(
-					"parts/${partType.name.pathName()}_${material.name.pathName()}",
-					partType.instance(material),
+					"parts/${getClassName(part).pathName()}_${material.name.pathName()}",
+					createInstance(part, material),
 					ModItemGroups.PARTS
 				)
 			)
@@ -66,5 +69,16 @@ object RegistryHelper {
 		return Registry.register(Registries.BLOCK, Identifier.of(ReImagined.MOD_ID, path), block)
 	}
 	
-	
+	fun registerRecipe(
+		id: String,
+		recipeType: RecipeType<*>,
+		recipeSerializer: RecipeSerializer<*>
+	) {
+		Registry.register(
+			Registries.RECIPE_SERIALIZER, Identifier(ReImagined.MOD_ID, id), recipeSerializer
+		)
+		Registry.register(
+			Registries.RECIPE_TYPE, Identifier(ReImagined.MOD_ID, id), recipeType
+		)
+	}
 }

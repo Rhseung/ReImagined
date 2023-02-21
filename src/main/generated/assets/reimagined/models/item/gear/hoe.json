@@ -10,7 +10,7 @@
   ],
   "textures": {
     "layer0": "reimagined:item/gear/hoe/handle",
-    "layer1": "reimagined:item/gear/hoe/head",
+    "layer1": "reimagined:item/gear/hoe/hoehead",
     "layer2": "reimagined:item/gear/hoe/binding"
   }
 }

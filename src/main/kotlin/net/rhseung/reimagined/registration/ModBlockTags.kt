@@ -1,10 +1,7 @@
 package net.rhseung.reimagined.registration
 
 import net.minecraft.block.Block
-import net.minecraft.block.Blocks
-import net.minecraft.registry.RegistryKey
 import net.minecraft.registry.RegistryKeys
-import net.minecraft.registry.tag.BlockTags
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.util.Identifier
 import net.rhseung.reimagined.ReImagined
@@ -24,7 +21,7 @@ object ModBlockTags {
 	val SWORD_MINEABLE: TagKey<Block> =
 		TagKey.of(RegistryKeys.BLOCK, Identifier.of("minecraft", "mineable/sword"))
 	
-	fun getTag(stat: Int) = when (stat) {
+	fun getTag(tier: Int) = when (tier) {
 		1 -> NEEDS_STONE_TOOL
 		2 -> NEEDS_COPPER_TOOL
 		3 -> NEEDS_IRON_TOOL

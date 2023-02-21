@@ -9,7 +9,7 @@ import net.minecraft.recipe.RecipeSerializer
 import net.minecraft.recipe.book.RecipeCategory
 import net.rhseung.reimagined.ReImagined
 import net.rhseung.reimagined.registration.ModItems
-import net.rhseung.reimagined.tool.gears.recipes.GearRecipe
+import net.rhseung.reimagined.tool.gears.GearRecipe
 import java.util.function.Consumer
 
 class ModRecipeGenerator(

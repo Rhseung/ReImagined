@@ -10,7 +10,7 @@
   ],
   "textures": {
     "layer0": "reimagined:item/gear/axe/handle",
-    "layer1": "reimagined:item/gear/axe/head",
+    "layer1": "reimagined:item/gear/axe/axehead",
     "layer2": "reimagined:item/gear/axe/binding"
   }
 }

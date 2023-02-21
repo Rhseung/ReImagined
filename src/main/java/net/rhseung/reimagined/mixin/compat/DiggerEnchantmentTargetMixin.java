@@ -2,7 +2,8 @@ package net.rhseung.reimagined.mixin.compat;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.item.Item;
-import net.rhseung.reimagined.tool.gears.base.BasicMiningGearItem;
+import net.rhseung.reimagined.tool.gears.BasicGear;
+import net.rhseung.reimagined.tool.gears.Gear;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -29,6 +30,10 @@ public abstract class DiggerEnchantmentTargetMixin {
         at = @At("RETURN")
     )
     private boolean isAcceptableItem_mixin(boolean original, Item item) {
-        return original || item instanceof BasicMiningGearItem;
+        if (item instanceof Gear gear) {
+            return gear.getBelongInstance().contains(new BasicGear.MiningTool());
+        } else {
+            return original;
+        }
     }
 }

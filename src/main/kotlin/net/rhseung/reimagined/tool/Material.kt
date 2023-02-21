@@ -2,15 +2,17 @@ package net.rhseung.reimagined.tool
 
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
-import net.rhseung.reimagined.tool.parts.enums.PartType
+import net.rhseung.reimagined.tool.parts.BasicPart
+import net.rhseung.reimagined.tool.parts.Part
 import net.rhseung.reimagined.utils.Color
 import net.rhseung.reimagined.utils.Math.pow
 import net.rhseung.reimagined.utils.Math.roundTo
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.reflect.KClass
 
 enum class Material(
-	var canParts: Set<PartType>,
+	var canParts: Set<KClass<out Part>>,
 	val ingredient: ItemConvertible? = null,
 	val color: Color = Color.WHITE,
 	var tier: Int = -1,
@@ -24,67 +26,56 @@ enum class Material(
 ) {
 	DUMMY(
 		setOf(
-			*PartType.HEAD,
-			PartType.BINDING,
-			PartType.HANDLE
+			*Part.classes
 		)
 	),
 	
 	@Property(tier = 0, weight = 0, hardness = 1)
 	STRING(
 		setOf(
-			PartType.BINDING
+			Part.Binding::class
 		), Items.STRING, Color.STRING
 	),
 	
 	@Property(tier = 0, weight = 0, hardness = 1)
 	VINE(
 		setOf(
-			PartType.BINDING
+			Part.Binding::class
 		), Items.VINE, Color.VINE
 	),
 	
 	@Property(tier = 0, weight = 1, hardness = 3)
 	WOOD(
 		setOf(
-			*PartType.HEAD,
-			PartType.BINDING,
-			PartType.HANDLE
+			*Part.classes
 		), Items.OAK_PLANKS, Color.WOOD
 	),
 	
 	@Property(tier = 1, weight = 2, hardness = 2)
 	STONE(
 		setOf(
-			*PartType.HEAD,
-			PartType.HANDLE
+			*Part.classes
 		), Items.COBBLESTONE, Color.STONE
 	),
 	
 	@Property(tier = 2, weight = 5, hardness = 8)
 	COPPER(
 		setOf(
-			*PartType.HEAD,
-			PartType.BINDING,
-			PartType.HANDLE
+			*Part.classes
 		), Items.COPPER_INGOT, Color.COPPER
 	),
 	
 	@Property(tier = 3, weight = 4, hardness = 20)
 	IRON(
 		setOf(
-			*PartType.HEAD,
-			PartType.BINDING,
-			PartType.HANDLE
+			*Part.classes
 		), Items.IRON_INGOT, Color.IRON
 	),
 	
 	@Property(tier = 4, weight = 2, hardness = 60)
 	DIAMOND(
 		setOf(
-			*PartType.HEAD,
-			PartType.BINDING,
-			PartType.HANDLE
+			*Part.classes
 		), Items.DIAMOND, Color.DIAMOND
 	),
 	// todofar: 다이아몬드는 보석류이므로 나중에 없앨거임
@@ -94,9 +85,7 @@ enum class Material(
 	@Property(tier = 5, weight = 4, hardness = 75)
 	NETHERITE(
 		setOf(
-			*PartType.HEAD,
-			PartType.BINDING,
-			PartType.HANDLE
+			*Part.classes
 		), Items.NETHERITE_INGOT, Color.NETHERITE
 	);
 	
@@ -130,11 +119,17 @@ enum class Material(
 			Stat.MINING_SPEED -> 3 + 3*tier - 0.3*weight
 			
 			Stat.ENCHANTABILITY -> min(7 - 0.5*tier + 2.5*(4 - weight), 25.0)
+			
+			else -> error("$s 공식은 아직 만들어지지 않았습니다")
 		}.toFloat()
 	}
 	
+	override fun toString(): String {
+		return "$name(canParts=$canParts)"
+	}
+	
 	companion object {
-		fun get(miningLevel: Int) = when (miningLevel) {
+		fun getMaterialFromMiningLevel(miningLevel: Int) = when (miningLevel) {
 			-1 -> DUMMY
 			0 -> WOOD
 			1 -> STONE
@@ -143,10 +138,6 @@ enum class Material(
 			4 -> DIAMOND
 			5 -> NETHERITE
 			else -> error("Invalid mining level: $miningLevel")
-		}
-		
-		fun getColor(miningLevel: Int): Color {
-			return get(miningLevel).color
 		}
 		
 		fun getValues() = Material.values().filter { it != DUMMY }

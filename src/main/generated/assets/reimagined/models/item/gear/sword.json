@@ -10,7 +10,7 @@
   ],
   "textures": {
     "layer0": "reimagined:item/gear/sword/handle",
-    "layer1": "reimagined:item/gear/sword/head",
-    "layer2": "reimagined:item/gear/sword/binding"
+    "layer1": "reimagined:item/gear/sword/blade",
+    "layer2": "reimagined:item/gear/sword/guard"
   }
 }

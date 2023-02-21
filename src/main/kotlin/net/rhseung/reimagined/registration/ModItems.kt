@@ -1,25 +1,9 @@
 package net.rhseung.reimagined.registration
 
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
-import net.minecraft.item.Item
-import net.minecraft.item.ItemGroup
-import net.minecraft.registry.Registries
-import net.minecraft.registry.Registry
-import net.minecraft.util.Identifier
-import net.rhseung.reimagined.ReImagined
-import net.rhseung.reimagined.tool.Material
-import net.rhseung.reimagined.tool.gears.PickaxeGear
-import net.rhseung.reimagined.tool.gears.base.BasicGearItem
-import net.rhseung.reimagined.tool.gears.enums.GearType
-import net.rhseung.reimagined.tool.parts.PickaxeHeadPart
-import net.rhseung.reimagined.tool.parts.base.BasicPartItem
-import net.rhseung.reimagined.tool.parts.enums.PartType
-import net.rhseung.reimagined.utils.Text.pathName
+import net.rhseung.reimagined.tool.gears.Gear
+import net.rhseung.reimagined.tool.parts.Part
 
 object ModItems {
-	val GEARS = GearType.getValues().associateWith { RegistryHelper.registerGear(it) }
-	val GEARS_LIST = GEARS.values.toList()
-	
-	val PARTS = PartType.getValues().associateWith { RegistryHelper.registerParts(it) }
-	val PARTS_LIST = PARTS.values.toList().flatten()
+	val GEARS_LIST: List<Gear> = Gear.instanceMap.values.toList()
+	val PARTS_LIST: List<Part> = Part.instanceMap.values.toList().flatten()
 }

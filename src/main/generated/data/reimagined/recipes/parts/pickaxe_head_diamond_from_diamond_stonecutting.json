@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "count": 1,
-  "ingredient": {
-    "item": "minecraft:diamond"
-  },
-  "result": "reimagined:parts/pickaxe_head_diamond"
-}

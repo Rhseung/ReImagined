@@ -10,7 +10,7 @@
   ],
   "textures": {
     "layer0": "reimagined:item/gear/pickaxe/handle",
-    "layer1": "reimagined:item/gear/pickaxe/head",
+    "layer1": "reimagined:item/gear/pickaxe/pickaxehead",
     "layer2": "reimagined:item/gear/pickaxe/binding"
   }
 }

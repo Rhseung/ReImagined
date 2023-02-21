@@ -10,7 +10,7 @@
   ],
   "textures": {
     "layer0": "reimagined:item/gear/shovel/handle",
-    "layer1": "reimagined:item/gear/shovel/head",
+    "layer1": "reimagined:item/gear/shovel/shovelhead",
     "layer2": "reimagined:item/gear/shovel/binding"
   }
 }

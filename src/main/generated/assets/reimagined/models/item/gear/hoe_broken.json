@@ -2,7 +2,7 @@
   "parent": "minecraft:item/handheld",
   "textures": {
     "layer0": "reimagined:item/gear/hoe/handle_broken",
-    "layer1": "reimagined:item/gear/hoe/head_broken",
+    "layer1": "reimagined:item/gear/hoe/hoehead_broken",
     "layer2": "reimagined:item/gear/hoe/binding_broken"
   }
 }
