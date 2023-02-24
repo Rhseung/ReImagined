@@ -4,7 +4,13 @@
     {
       "model": "reimagined:item/gear/hoe_broken",
       "predicate": {
-        "broken": 1
+        "reimagined:gear_model": 1
+      }
+    },
+    {
+      "model": "reimagined:item/gear/hoe_grip",
+      "predicate": {
+        "reimagined:gear_model": 2
       }
     }
   ],

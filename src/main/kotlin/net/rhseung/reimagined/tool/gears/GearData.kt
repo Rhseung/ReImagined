@@ -4,7 +4,9 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
-import net.rhseung.reimagined.tool.parts.Part
+import net.rhseung.reimagined.tool.parts.definitions.BasicPart
+import net.rhseung.reimagined.tool.parts.definitions.Part
+import net.rhseung.reimagined.utils.Bunch
 import net.rhseung.reimagined.utils.Math.roundTo
 import net.rhseung.reimagined.utils.Text.pathName
 import net.rhseung.reimagined.utils.Utils.getClassName
@@ -92,13 +94,20 @@ object GearData {
 	
 	fun writeParts(
 		stack: ItemStack,
+		includeParts: List<KClass<out Part>>,
 		vararg parts: Part,
 	) {
 		val root = getData(stack, NBT_ROOT_PARTS)
 		
-		for (part in parts) {
-			val compoundKey = part.className.pathName()
-			root.putString(compoundKey, part.material.name.pathName())
+		for (partType in includeParts) {
+			val part = parts.find { it::class == partType }
+			
+			if (part != null) {
+				val compoundKey = part.className.pathName()
+				root.putString(compoundKey, part.material.name.pathName())
+			} else {
+				putPartIfMissing(stack, partType)
+			}
 		}
 	}
 	

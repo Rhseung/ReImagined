@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.random.Random;
-import net.rhseung.reimagined.tool.gears.Gear;
+import net.rhseung.reimagined.tool.gears.definition.Gear;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 

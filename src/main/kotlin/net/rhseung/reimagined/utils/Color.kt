@@ -93,6 +93,7 @@ class Color {
 		
 		val STRING = Color(255, 255, 255)
 		val VINE = Color(52, 87, 25)
+		val LEATHER = Color(198, 92, 53)
 		
 		val WHITE = Color(255, 255, 255)
 		val GRAY = Color(170, 170, 170)

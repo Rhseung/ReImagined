@@ -7,10 +7,11 @@ import net.minecraft.item.Items
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.rhseung.reimagined.ReImagined
+import net.rhseung.reimagined.ReImagined.ID
 import java.util.function.Supplier
 
 object ModItemGroups {
-	val PARTS: ItemGroup = FabricItemGroup.builder(Identifier(ReImagined.MOD_ID, "parts"))
+	val PARTS: ItemGroup = FabricItemGroup.builder(ID("parts"))
 		.displayName(Text.translatable("Parts"))
 		.icon { ItemStack(Items.NETHERITE_PICKAXE) }
 		.build()

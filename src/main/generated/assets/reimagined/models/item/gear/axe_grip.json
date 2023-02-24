@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "reimagined:item/gear/axe/handle",
+    "layer1": "reimagined:item/gear/axe/axehead",
+    "layer2": "reimagined:item/gear/axe/binding",
+    "layer3": "reimagined:item/gear/axe/grip"
+  }
+}

@@ -1,9 +1,9 @@
-package net.rhseung.reimagined.mixin.compat;
+package net.rhseung.reimagined.mixin.enchantment;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.item.Item;
-import net.rhseung.reimagined.tool.gears.BasicGear;
-import net.rhseung.reimagined.tool.gears.Gear;
+import net.rhseung.reimagined.tool.gears.definition.BasicGear;
+import net.rhseung.reimagined.tool.gears.definition.Gear;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 

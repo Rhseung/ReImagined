@@ -21,7 +21,7 @@ class Bunch<T, U> constructor(
 			return Bunch(other, this)
 		}
 		
-		infix fun <T, U> T.with(other: U): Bunch<T, U> {
+		infix fun <T, U> T.to(other: U): Bunch<T, U> {
 			return Bunch(this, other)
 		}
 	}

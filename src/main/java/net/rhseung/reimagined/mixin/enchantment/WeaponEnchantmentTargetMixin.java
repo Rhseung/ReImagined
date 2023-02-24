@@ -1,9 +1,9 @@
-package net.rhseung.reimagined.mixin.compat;
+package net.rhseung.reimagined.mixin.enchantment;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.item.Item;
-import net.rhseung.reimagined.tool.gears.BasicGear;
-import net.rhseung.reimagined.tool.gears.Gear;
+import net.rhseung.reimagined.tool.gears.definition.BasicGear;
+import net.rhseung.reimagined.tool.gears.definition.Gear;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -23,15 +23,15 @@ import org.spongepowered.asm.mixin.injection.At;
  * $13: FISHING_ROD
  * $14: TRIDENT
  */
-@Mixin(targets = {"net/minecraft/enchantment/EnchantmentTarget$2"})
-public abstract class BreakableEnchantmentTargetMixin {
+@Mixin(targets = {"net/minecraft/enchantment/EnchantmentTarget$11"})
+public abstract class WeaponEnchantmentTargetMixin {
     @ModifyReturnValue(
         method = "isAcceptableItem(Lnet/minecraft/item/Item;)Z",
         at = @At("RETURN")
     )
     private boolean isAcceptableItem_mixin(boolean original, Item item) {
         if (item instanceof Gear gear) {
-            return true;
+            return gear.getBelongInstance().contains(new BasicGear.MeleeWeapon());
         } else {
             return original;
         }

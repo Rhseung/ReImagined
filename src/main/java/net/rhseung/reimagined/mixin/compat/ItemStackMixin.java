@@ -3,7 +3,7 @@ package net.rhseung.reimagined.mixin.compat;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.rhseung.reimagined.tool.gears.Gear;
+import net.rhseung.reimagined.tool.gears.definition.Gear;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

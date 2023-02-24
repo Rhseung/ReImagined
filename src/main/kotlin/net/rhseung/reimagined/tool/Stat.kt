@@ -25,7 +25,7 @@ enum class Stat constructor(
 	),
 	ATTACK_SPEED(CalculateType.SUM,
 		Color.SMOOTH_VIOLET,
-		defaultValue = 1.0F
+		defaultValue = 0.0F
 	),
 	MINING_TIER(CalculateType.SUM,
 		Color.WHITE,
@@ -34,7 +34,7 @@ enum class Stat constructor(
 	),
 	MINING_SPEED(CalculateType.AVERAGE,
 		Color.SMOOTH_BLUE,
-		defaultValue = 1.0F
+		defaultValue = 0.0F
 	),
 	ENCHANTABILITY(CalculateType.AVERAGE,
 		Color.GOLD,
@@ -48,7 +48,7 @@ enum class Stat constructor(
 	),
 	DRAW_SPEED(CalculateType.SUM,
 		Color.BLUE,
-		defaultValue = 1.0F
+		defaultValue = 0.0F
 	);
 	// todofar: 다른 스탯도 추가하기
 	

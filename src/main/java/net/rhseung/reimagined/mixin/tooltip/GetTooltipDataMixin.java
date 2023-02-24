@@ -3,7 +3,7 @@ package net.rhseung.reimagined.mixin.tooltip;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.item.*;
-import net.rhseung.reimagined.tool.gears.Gear;
+import net.rhseung.reimagined.tool.gears.definition.Gear;
 import net.rhseung.reimagined.tool.gears.GearTooltipData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

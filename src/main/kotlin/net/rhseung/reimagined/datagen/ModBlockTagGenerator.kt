@@ -2,15 +2,10 @@ package net.rhseung.reimagined.datagen
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider
-import net.fabricmc.fabric.impl.datagen.ForcedTagEntry
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.registry.*
 import net.minecraft.registry.tag.BlockTags
-import net.minecraft.registry.tag.TagBuilder
-import net.minecraft.registry.tag.TagEntry
-import net.minecraft.registry.tag.TagKey
-import net.minecraft.util.Identifier
 import net.rhseung.reimagined.registration.ModBlockTags
 import java.util.concurrent.CompletableFuture
 
@@ -20,7 +15,7 @@ class ModBlockTagGenerator(
 ) : FabricTagProvider<Block>(output, RegistryKeys.BLOCK, registriesFuture) {
 	
 	override fun configure(arg: RegistryWrapper.WrapperLookup?) {
-		getOrCreateTagBuilder(ModBlockTags.NEEDS_STONE_TOOL).add(
+		getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL).add(
 			Blocks.COPPER_BLOCK,
 			Blocks.RAW_COPPER_BLOCK,
 			Blocks.COPPER_ORE,
@@ -73,7 +68,7 @@ class ModBlockTagGenerator(
 		
 		getOrCreateTagBuilder(ModBlockTags.NEEDS_DIAMOND_TOOL).forceAddTag(BlockTags.NEEDS_DIAMOND_TOOL)
 
-//		getOrCreateTagBuilder(ModBlockTags.NEEDS_NETHERITE_TOOL).add(Blocks.NETHERITE_BLOCK)
+//		getOrCreateTagBuilder(ModBlockTags.NEEDS_NETHERITE_TOOL).add(ModBlocks.NETHERITE_BLOCK)
 		
 		getOrCreateTagBuilder(ModBlockTags.SWORD_MINEABLE).add(Blocks.COBWEB).forceAddTag(BlockTags.LEAVES)
 	}

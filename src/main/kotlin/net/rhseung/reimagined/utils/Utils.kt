@@ -11,7 +11,17 @@ object Utils {
 		} catch (e: IndexOutOfBoundsException) {
 			error("index out of bounds (index: $index, list: ${0 until ret.size})")
 		}
+		
+		val a = arrayOf(1 to 1,2 to 2,3 to 3)
+		a.associate { it.first to it.second }
+		
 		return ret.toList()
+	}
+	
+	fun <T, K, V> Array<out T>.associateIndexed(action: (index: Int, element: T) -> Pair<K, V>): Map<K, V> {
+		val map = mutableMapOf<K, V>()
+		this.forEachIndexed { idx, t -> map[action(idx, t).first] = action(idx, t).second }
+		return map.toMap()
 	}
 	
 	fun <T> List<T>.append(element: T): List<T> {

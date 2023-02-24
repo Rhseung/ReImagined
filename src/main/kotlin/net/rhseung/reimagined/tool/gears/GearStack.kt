@@ -28,16 +28,16 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.random.Random
 import net.minecraft.world.World
 import net.rhseung.reimagined.registration.ModBlockTags
-import net.rhseung.reimagined.registration.ModItems
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.Stat
 import net.rhseung.reimagined.tool.gears.GearData.NBT_ROOT
 import net.rhseung.reimagined.tool.gears.GearData.putPartIfMissing
 import net.rhseung.reimagined.tool.gears.GearData.putStatIfMissing
-import net.rhseung.reimagined.tool.parts.BasicPart
-import net.rhseung.reimagined.tool.parts.Part
+import net.rhseung.reimagined.tool.gears.definition.Gear
+import net.rhseung.reimagined.tool.parts.definitions.BasicPart
+import net.rhseung.reimagined.tool.parts.definitions.Part
 import net.rhseung.reimagined.utils.Bunch
-import net.rhseung.reimagined.utils.Bunch.Companion.with
+import net.rhseung.reimagined.utils.Bunch.Companion.to
 import net.rhseung.reimagined.utils.Color
 import net.rhseung.reimagined.utils.Color.Companion.gradient
 import net.rhseung.reimagined.utils.Math.pow
@@ -103,7 +103,7 @@ class GearStack(
 	
 	val name = Text.translatable(
 		stack.item.getTranslationKey(stack),
-		getPart(getPartTypeFromBasicPartType(BasicPart.Head::class)).material.name.displayName()
+		getPart(getPartTypeFromBasicPartType(BasicPart.Head::class))!!.material.name.displayName()
 	)
 	
 	val attackDamage = if (isBroken) BROKEN_ATTACK_DAMAGE
@@ -308,7 +308,7 @@ class GearStack(
 	fun canRepair(
 		ingredient: ItemStack,
 	): Boolean {
-		val repairIngredient = getPart(getPartTypeFromBasicPartType(BasicPart.Head::class)).material.ingredient
+		val repairIngredient = getPart(getPartTypeFromBasicPartType(BasicPart.Head::class))!!.material.ingredient
 		
 		return if (repairIngredient == null) false
 		else Ingredient.ofItems(repairIngredient).test(ingredient)
@@ -317,7 +317,7 @@ class GearStack(
 	fun isSuitableFor(
 		state: BlockState,
 	): Boolean {
-		val maxTier = Material.getValues().maxOf { it.tier }
+		val maxTier = Material.values().maxOf { it.tier }
 		
 		for (i in maxTier downTo 1) // STONE(1) 까지임, WOOD(0) 는 손과 같아서 따로 태그도 없음
 			if (miningTier < i && state.isIn(ModBlockTags.getTag(i))) return false
@@ -349,12 +349,12 @@ class GearStack(
 	fun getPart(
 		part: KClass<out Part>,
 		partCompoundInput: NbtCompound? = null,
-	): Part {
+	): Part? {
 		val partCompound = partCompoundInput ?: GearData.getData(stack, GearData.NBT_ROOT_PARTS)
 		
 		if (partCompound.contains(getClassName(part).pathName())) {
 			val materialName = partCompound.getString(getClassName(part).pathName())
-			return Part.instanceMap[part]!!.find { it.material.name.pathName() == materialName }!!
+			return Part.instanceMap[part]!!.find { it.material.name.pathName() == materialName }
 		} else {
 			putPartIfMissing(stack, part)
 		}
@@ -364,12 +364,12 @@ class GearStack(
 	
 	fun getParts(
 		slotAndType: List<Bunch<KClass<out BasicPart>, KClass<out Part>>>,
-	): List<Bunch<KClass<out BasicPart>, Part>> {
-		var parts = listOf<Bunch<KClass<out BasicPart>, Part>>()
+	): List<Bunch<KClass<out BasicPart>, Part?>> {
+		var parts = listOf<Bunch<KClass<out BasicPart>, Part?>>()
 		val partCompound = GearData.getData(stack, GearData.NBT_ROOT_PARTS)
 		
 		for ((slot, type) in slotAndType) {
-			parts = parts.append(slot with getPart(type, partCompound))
+			parts = parts.append(slot to getPart(type, partCompound))
 		}
 		
 		return parts

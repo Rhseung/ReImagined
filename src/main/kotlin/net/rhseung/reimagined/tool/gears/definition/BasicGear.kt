@@ -1,8 +1,8 @@
-package net.rhseung.reimagined.tool.gears
+package net.rhseung.reimagined.tool.gears.definition
 
-import net.minecraft.item.Item
 import net.rhseung.reimagined.tool.Stat
-import net.rhseung.reimagined.tool.parts.BasicPart
+import net.rhseung.reimagined.tool.gears.BelongsTo
+import net.rhseung.reimagined.tool.parts.definitions.BasicPart
 import net.rhseung.reimagined.utils.Utils.createInstance
 import net.rhseung.reimagined.utils.Utils.up
 import kotlin.reflect.KClass
@@ -20,18 +20,18 @@ sealed class BasicGear constructor(
 		commonPartSlots = listOf()
 	) {}
 	
-	@BelongTo(Common::class)
+	@BelongsTo(Common::class)
 	class Closed : BasicGear(
 		commonStats = setOf(Stat.ATTACK_DAMAGE, Stat.ATTACK_SPEED),
 		commonPartSlots = listOf()
 	) {}
 	
-	@BelongTo(Common::class)
+	@BelongsTo(Common::class)
 	class Ranged : BasicGear(
 		commonStats = setOf(Stat.RANGED_DAMAGE, Stat.DRAW_SPEED)
 	) {}
 	
-	@BelongTo(Closed::class)
+	@BelongsTo(Closed::class)
 	class MiningTool : BasicGear(
 		commonStats = setOf(Stat.MINING_TIER, Stat.MINING_SPEED),
 		commonPartSlots = listOf(BasicPart.Handle::class)
@@ -40,7 +40,7 @@ sealed class BasicGear constructor(
 		modifierName = "Tool modifier"
 	) {}
 	
-	@BelongTo(Closed::class)
+	@BelongsTo(Closed::class)
 	class MeleeWeapon : BasicGear(
 		commonPartSlots = listOf(BasicPart.Handle::class)
 							.up(BasicPart.Head::class)
@@ -49,9 +49,11 @@ sealed class BasicGear constructor(
 	) {}
 	
 	init {
+		commonPartSlots = commonPartSlots.up(BasicPart.Optional::class)
+		
 		this.javaClass.annotations.forEach { annotation ->
 			when (annotation) {
-				is BelongTo -> {
+				is BelongsTo -> {
 					annotation.value.forEach {
 						val instance = createInstance(it)
 						

@@ -2,8 +2,6 @@ package net.rhseung.reimagined.tool
 
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
-import net.rhseung.reimagined.tool.parts.BasicPart
-import net.rhseung.reimagined.tool.parts.Part
 import net.rhseung.reimagined.utils.Color
 import net.rhseung.reimagined.utils.Math.pow
 import net.rhseung.reimagined.utils.Math.roundTo
@@ -12,7 +10,6 @@ import kotlin.math.min
 import kotlin.reflect.KClass
 
 enum class Material(
-	var canParts: Set<KClass<out Part>>,
 	val ingredient: ItemConvertible? = null,
 	val color: Color = Color.WHITE,
 	var tier: Int = -1,
@@ -24,70 +21,55 @@ enum class Material(
 	/** for not vanilla materials */
 	val worldSpawn: Boolean = false,
 ) {
-	DUMMY(
-		setOf(
-			*Part.classes
-		)
-	),
+	@Type(MaterialType.DUMMY)
+	DUMMY,
 	
+	@Type(MaterialType.FIBER)
 	@Property(tier = 0, weight = 0, hardness = 1)
-	STRING(
-		setOf(
-			Part.Binding::class
-		), Items.STRING, Color.STRING
-	),
+	STRING(Items.STRING, Color.STRING),
 	
+	@Type(MaterialType.FIBER)
 	@Property(tier = 0, weight = 0, hardness = 1)
-	VINE(
-		setOf(
-			Part.Binding::class
-		), Items.VINE, Color.VINE
-	),
+	VINE(Items.VINE, Color.VINE),
 	
+	@Type(MaterialType.CLOTH)
+	@Property(tier = 0, weight = 0, hardness = 3)
+	LEATHER(Items.LEATHER, Color.LEATHER),
+	
+	@Type(MaterialType.CLOTH)
+	@Property(tier = 0, weight = 0, hardness = 2)
+	WOOL(Items.WHITE_WOOL, Color.WHITE),
+	
+	@Type(MaterialType.WOOD)
 	@Property(tier = 0, weight = 1, hardness = 3)
-	WOOD(
-		setOf(
-			*Part.classes
-		), Items.OAK_PLANKS, Color.WOOD
-	),
+	WOOD(Items.OAK_PLANKS, Color.WOOD),
 	
+	@Type(MaterialType.ROCK)
 	@Property(tier = 1, weight = 2, hardness = 2)
-	STONE(
-		setOf(
-			*Part.classes
-		), Items.COBBLESTONE, Color.STONE
-	),
+	STONE(Items.COBBLESTONE, Color.STONE),
 	
+	@Type(MaterialType.METAL)
 	@Property(tier = 2, weight = 5, hardness = 8)
-	COPPER(
-		setOf(
-			*Part.classes
-		), Items.COPPER_INGOT, Color.COPPER
-	),
+	COPPER(Items.COPPER_INGOT, Color.COPPER),
 	
+	@Type(MaterialType.METAL)
 	@Property(tier = 3, weight = 4, hardness = 20)
-	IRON(
-		setOf(
-			*Part.classes
-		), Items.IRON_INGOT, Color.IRON
-	),
+	IRON(Items.IRON_INGOT, Color.IRON),
 	
+	@Type(MaterialType.GEM)
 	@Property(tier = 4, weight = 2, hardness = 60)
-	DIAMOND(
-		setOf(
-			*Part.classes
-		), Items.DIAMOND, Color.DIAMOND
-	),
+	DIAMOND(Items.DIAMOND, Color.DIAMOND),
 	// todofar: 다이아몬드는 보석류이므로 나중에 없앨거임
 	//      - 강철로 할 것 같음
 	//      - 용광로(->합금제조기)랑 훈연기(->코크오븐) 오버라이딩해서 만들 예정
 	
+	@Type(MaterialType.METAL)
 	@Property(tier = 5, weight = 4, hardness = 75)
-	NETHERITE(
-		setOf(
-			*Part.classes
-		), Items.NETHERITE_INGOT, Color.NETHERITE
-	);
+	NETHERITE(Items.NETHERITE_INGOT, Color.NETHERITE);
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	
+	lateinit var type: MaterialType
 	
 	init {
 		this.declaringJavaClass.getField(name).annotations.forEach { annotation ->
@@ -97,6 +79,7 @@ enum class Material(
 					weight = annotation.weight
 					hardness = annotation.hardness
 				}
+				is Type -> type = annotation.type
 			}
 		}
 	}
@@ -125,7 +108,7 @@ enum class Material(
 	}
 	
 	override fun toString(): String {
-		return "$name(canParts=$canParts)"
+		return "$name(type=$type)"
 	}
 	
 	companion object {
@@ -141,5 +124,15 @@ enum class Material(
 		}
 		
 		fun getValues() = Material.values().filter { it != DUMMY }
+	}
+	
+	enum class MaterialType {
+		METAL,
+		GEM,
+		WOOD,
+		ROCK,
+		FIBER,
+		CLOTH,
+		DUMMY
 	}
 }

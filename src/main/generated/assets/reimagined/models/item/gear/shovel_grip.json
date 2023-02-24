@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "reimagined:item/gear/shovel/handle",
+    "layer1": "reimagined:item/gear/shovel/shovelhead",
+    "layer2": "reimagined:item/gear/shovel/binding",
+    "layer3": "reimagined:item/gear/shovel/grip"
+  }
+}

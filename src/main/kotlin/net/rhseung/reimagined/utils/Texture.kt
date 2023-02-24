@@ -15,7 +15,8 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
-import net.rhseung.reimagined.ReImagined
+import net.rhseung.reimagined.ReImagined.ID
+import net.rhseung.reimagined.datagen.ModModelGenerator
 import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Supplier
@@ -33,52 +34,62 @@ object Texture {
 	
 	@Environment(EnvType.CLIENT)
 	fun overrideTexture(
-		id: String,
+		id: Identifier,
 		predicateProvider: (stack: ItemStack, world: ClientWorld?, entity: LivingEntity?, seed: Int) -> Number,
 		item: Item
 	) {
-		ModelPredicateProviderRegistry.register(item, Identifier(id)) { stack, world, entity, seed ->
+		ModelPredicateProviderRegistry.register(item, id) { stack, world, entity, seed ->
 			predicateProvider(stack, world, entity, seed).toFloat()
 		}
 	}
 	
-	class OverrideTexture(val id: String, val value: Number, val modelName: String = id) {
-		fun modelNameWithPrefix(prefix: String): OverrideTexture {
-			return OverrideTexture(id, value, modelName = prefix + id)
+	class OverrideBuilder constructor(
+		vararg val predicates: Pair<Identifier, Number>,
+		val modelName: String = predicates.joinToString("") { "_" + it.first },
+		val prefix: String = ""
+	) {
+		fun addPredicate(id: Identifier, value: Number): OverrideBuilder {
+			return OverrideBuilder(*predicates, id to value, modelName = modelName, prefix = prefix)
+		}
+		
+		fun setModelName(modelName: String): OverrideBuilder {
+			return OverrideBuilder(*predicates, modelName = modelName)
+		}
+		
+		fun setModelNamePrefix(prefix: String): OverrideBuilder {
+			return OverrideBuilder(*predicates, modelName = modelName, prefix = prefix)
 		}
 	}
 	
 	fun upload(
-		id: Identifier,
 		modelCollector: BiConsumer<Identifier, Supplier<JsonElement>>,
-		textures: Map<TextureKey, Identifier>,
-		overrides: List<OverrideTexture> = emptyList()
+		builder: ModModelGenerator.ItemModelBuilder
 	): Identifier {
-		val parent = Optional.of(Identifier("minecraft", "item/handheld"))
-		
-		modelCollector.accept(id, Supplier {
+		modelCollector.accept(builder.id, Supplier {
 			val jsonObject = JsonObject()
 			
-			parent.ifPresent { parentId: Identifier ->
-				jsonObject.addProperty("parent", parentId.toString())
-			}
+			jsonObject.addProperty("parent", builder.parent.toString())
 			
-			if (textures.isNotEmpty()) {
+			if (builder.textures.isNotEmpty()) {
 				val textureJsonObject = JsonObject()
-				textures.forEach { (textureKey: TextureKey, textureId: Identifier) ->
-					textureJsonObject.addProperty(textureKey.name, textureId.toString())
+				builder.textures.forEach { (textureKey: String, textureId: Identifier) ->
+					textureJsonObject.addProperty(textureKey, textureId.toString())
 				}
 				jsonObject.add("textures", textureJsonObject)
 			}
 			
-			if (overrides.isNotEmpty()) {
+			if (builder.overrides.isNotEmpty()) {
 				val overrideJsonArray = JsonArray()
-				overrides.forEach {
+				builder.overrides.forEach { overrideBuilder ->
 					val eachOverride = JsonObject()
+					
 					val eachPredicate = JsonObject()
-					eachPredicate.addProperty(it.id, it.value)
+					overrideBuilder.predicates.forEach {
+						eachPredicate.addProperty(it.key.toString(), it.value.number)
+					}
+					
 					eachOverride.add("predicate", eachPredicate)
-					eachOverride.addProperty("model", "${ReImagined.MOD_ID}:item/${it.modelName}")
+					eachOverride.addProperty("model", overrideBuilder.model.toString())
 					
 					overrideJsonArray.add(eachOverride)
 				}
@@ -87,6 +98,7 @@ object Texture {
 			
 			jsonObject
 		})
-		return id
+		
+		return builder.id
 	}
 }

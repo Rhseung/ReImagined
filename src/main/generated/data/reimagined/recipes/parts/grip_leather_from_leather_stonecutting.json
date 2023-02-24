@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 1,
+  "ingredient": {
+    "item": "minecraft:leather"
+  },
+  "result": "reimagined:parts/grip_leather"
+}

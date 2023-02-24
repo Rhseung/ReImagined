@@ -4,7 +4,13 @@
     {
       "model": "reimagined:item/gear/pickaxe_broken",
       "predicate": {
-        "broken": 1
+        "reimagined:gear_model": 1
+      }
+    },
+    {
+      "model": "reimagined:item/gear/pickaxe_grip",
+      "predicate": {
+        "reimagined:gear_model": 2
       }
     }
   ],

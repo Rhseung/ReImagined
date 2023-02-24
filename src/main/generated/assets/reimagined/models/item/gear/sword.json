@@ -4,12 +4,18 @@
     {
       "model": "reimagined:item/gear/sword_broken",
       "predicate": {
-        "broken": 1
+        "reimagined:gear_model": 1
+      }
+    },
+    {
+      "model": "reimagined:item/gear/sword_grip",
+      "predicate": {
+        "reimagined:gear_model": 2
       }
     }
   ],
   "textures": {
-    "layer0": "reimagined:item/gear/sword/handle",
+    "layer0": "reimagined:item/gear/sword/rod",
     "layer1": "reimagined:item/gear/sword/blade",
     "layer2": "reimagined:item/gear/sword/guard"
   }

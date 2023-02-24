@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "reimagined:item/gear/sword/rod",
+    "layer1": "reimagined:item/gear/sword/blade",
+    "layer2": "reimagined:item/gear/sword/guard",
+    "layer3": "reimagined:item/gear/sword/grip"
+  }
+}

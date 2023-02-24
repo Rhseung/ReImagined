@@ -31,7 +31,7 @@ object Tooltip {
 		var idx = 0
 		for (e in arr) {
 			ret = if (e.startsWith('#')) {
-				ret.append(this@Tooltip.coloring(e.substring(1), if (colors.count() > idx) colors[idx++] else Color.WHITE))
+				ret.append(coloring(e.substring(1), if (colors.count() > idx) colors[idx++] else Color.WHITE))
 			} else {
 				ret.append(e)
 			}

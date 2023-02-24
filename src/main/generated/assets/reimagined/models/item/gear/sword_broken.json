@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:item/handheld",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "reimagined:item/gear/sword/handle_broken",
+    "layer0": "reimagined:item/gear/sword/rod_broken",
     "layer1": "reimagined:item/gear/sword/blade_broken",
     "layer2": "reimagined:item/gear/sword/guard_broken"
   }

@@ -1,4 +1,4 @@
-package net.rhseung.reimagined.tool.gears
+package net.rhseung.reimagined.tool.gears.definition
 
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
@@ -9,7 +9,6 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Vanishable
-import net.minecraft.nbt.NbtCompound
 import net.minecraft.registry.tag.BlockTags
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.text.MutableText
@@ -19,35 +18,107 @@ import net.minecraft.world.World
 import net.rhseung.reimagined.registration.ModBlockTags
 import net.rhseung.reimagined.registration.RegistryHelper
 import net.rhseung.reimagined.tool.Stat
-import net.rhseung.reimagined.tool.parts.BasicPart
-import net.rhseung.reimagined.tool.parts.Part
+import net.rhseung.reimagined.tool.gears.BelongsTo
+import net.rhseung.reimagined.tool.gears.GearStack
+import net.rhseung.reimagined.tool.gears.Property
+import net.rhseung.reimagined.tool.parts.definitions.BasicPart
+import net.rhseung.reimagined.tool.parts.definitions.Part
 import net.rhseung.reimagined.utils.Bunch
-import net.rhseung.reimagined.utils.Bunch.Companion.with
+import net.rhseung.reimagined.utils.Bunch.Companion.to
 import net.rhseung.reimagined.utils.Utils.append
 import net.rhseung.reimagined.utils.Utils.createInstance
+import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 
 sealed class Gear constructor(
-	val baseAttackDamage: Double,
-	val baseAttackSpeed: Double,
 	val effectiveBlocks: TagKey<Block>,
-	vararg moreParts: Bunch<KClass<out BasicPart>, KClass<out Part>>,
+	val moreParts: Array<Bunch<KClass<out BasicPart>, KClass<out Part>>>,
 ) : Item(Settings().maxCount(1)), Vanishable {
+	
+	@BelongsTo(BasicGear.MiningTool::class)
+	@Property(1.0, 1.2)
+	class Pickaxe : Gear(
+		effectiveBlocks = BlockTags.PICKAXE_MINEABLE,
+		moreParts = arrayOf(
+			BasicPart.Head::class    to Part.PickaxeHead::class,
+			BasicPart.Binding::class to Part.Binding::class,
+			BasicPart.Handle::class  to Part.Handle::class,
+			BasicPart.Optional::class  to Part.Grip::class,
+		)
+	) {}
+	
+	@BelongsTo(BasicGear.MiningTool::class)
+	@Property(5.0, 0.9)
+	class Axe : Gear(
+		effectiveBlocks = BlockTags.AXE_MINEABLE,
+		moreParts = arrayOf(
+			BasicPart.Head::class    to Part.AxeHead::class,
+			BasicPart.Binding::class to Part.Binding::class,
+			BasicPart.Handle::class  to Part.Handle::class,
+			BasicPart.Optional::class  to Part.Grip::class,
+		)
+	) {}
+	
+	@BelongsTo(BasicGear.MiningTool::class)
+	@Property(1.5, 1.0)
+	class Shovel : Gear(
+		effectiveBlocks = BlockTags.SHOVEL_MINEABLE,
+		moreParts = arrayOf(
+			BasicPart.Head::class    to Part.ShovelHead::class,
+			BasicPart.Binding::class to Part.Binding::class,
+			BasicPart.Handle::class  to Part.Handle::class,
+			BasicPart.Optional::class  to Part.Grip::class,
+		)
+	) {}
+	
+	@BelongsTo(BasicGear.MiningTool::class)
+	@Property(1.0, 1.4)
+	class Hoe : Gear(
+		effectiveBlocks = BlockTags.HOE_MINEABLE,
+		moreParts = arrayOf(
+			BasicPart.Head::class    to Part.HoeHead::class,
+			BasicPart.Binding::class to Part.Binding::class,
+			BasicPart.Handle::class  to Part.Handle::class,
+			BasicPart.Optional::class  to Part.Grip::class,
+		)
+	) {}
+	
+	@BelongsTo(BasicGear.MeleeWeapon::class)
+	@Property(3.0, 1.6)
+	class Sword : Gear(
+		effectiveBlocks = ModBlockTags.SWORD_MINEABLE,
+		moreParts = arrayOf(
+			BasicPart.Head::class    to Part.Blade::class,
+			BasicPart.Binding::class to Part.Guard::class,
+			BasicPart.Handle::class  to Part.Rod::class,
+			BasicPart.Optional::class  to Part.Grip::class,
+		)
+	) {}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	
 	var includeStats: Set<Stat> = setOf()
 	var includeParts: List<Bunch<KClass<out BasicPart>, KClass<out Part>>> = listOf()
+	var optionalParts: List<Bunch<KClass<out BasicPart>, KClass<out Part>>> = listOf()
+	var notOptionalParts: List<Bunch<KClass<out BasicPart>, KClass<out Part>>> = listOf()
 	var belongInstance: List<BasicGear> = listOf()
-	
 	val className: String = this.javaClass.simpleName
+	var baseAttackDamage by Delegates.notNull<Double>()
+	var baseAttackSpeed by Delegates.notNull<Double>()
 	
 	init {
 		this.javaClass.annotations.forEach { annotation ->
 			when (annotation) {
-				is BelongTo -> {
+				is BelongsTo -> {
 					annotation.value.forEach {
 						val instance = createInstance(it)
 						belongInstance += instance
 						includeStats += instance.commonStats
 					}
+				}
+				is Property  -> {
+					baseAttackDamage = annotation.baseAttackDamage
+					baseAttackSpeed = annotation.baseAttackSpeed
 				}
 			}
 		}
@@ -62,6 +133,9 @@ sealed class Gear constructor(
 				}
 			}
 		}
+		
+		optionalParts = includeParts.filter { it.basicType == BasicPart.Optional::class }
+		notOptionalParts = includeParts - optionalParts.toSet()
 	}
 	
 	companion object {
@@ -89,63 +163,6 @@ sealed class Gear constructor(
 		       other.belongInstance == this.belongInstance &&
 		       other.className == this.className
 	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	
-	@BelongTo(BasicGear.MiningTool::class)
-	class Pickaxe : Gear(
-		baseAttackDamage = 1.0,
-		baseAttackSpeed = 1.2,
-		effectiveBlocks = BlockTags.PICKAXE_MINEABLE,
-		
-		BasicPart.Head::class with Part.PickaxeHead::class,
-		BasicPart.Binding::class with Part.Binding::class,
-		BasicPart.Handle::class with Part.Handle::class
-	) {}
-	
-	@BelongTo(BasicGear.MiningTool::class, BasicGear.MeleeWeapon::class)
-	class Axe : Gear(
-		baseAttackDamage = 5.0,
-		baseAttackSpeed = 0.9,
-		effectiveBlocks = BlockTags.AXE_MINEABLE,
-		
-		BasicPart.Head::class with Part.AxeHead::class,
-		BasicPart.Binding::class with Part.Binding::class,
-		BasicPart.Handle::class with Part.Handle::class
-	) {}
-	
-	@BelongTo(BasicGear.MiningTool::class)
-	class Shovel : Gear(
-		baseAttackDamage = 1.5,
-		baseAttackSpeed = 1.0,
-		effectiveBlocks = BlockTags.SHOVEL_MINEABLE,
-		
-		BasicPart.Head::class with Part.ShovelHead::class,
-		BasicPart.Binding::class with Part.Binding::class,
-		BasicPart.Handle::class with Part.Handle::class
-	) {}
-	
-	@BelongTo(BasicGear.MiningTool::class)
-	class Hoe : Gear(
-		baseAttackDamage = 1.0,
-		baseAttackSpeed = 1.4,
-		effectiveBlocks = BlockTags.HOE_MINEABLE,
-		
-		BasicPart.Head::class with Part.HoeHead::class,
-		BasicPart.Binding::class with Part.Binding::class,
-		BasicPart.Handle::class with Part.Handle::class
-	) {}
-	
-	@BelongTo(BasicGear.MeleeWeapon::class)
-	class Sword : Gear(
-		baseAttackDamage = 3.0,
-		baseAttackSpeed = 1.6,
-		effectiveBlocks = ModBlockTags.SWORD_MINEABLE,
-		
-		BasicPart.Head::class with Part.Blade::class,
-		BasicPart.Binding::class with Part.Guard::class,
-		BasicPart.Handle::class with Part.Handle::class
-	) {}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	

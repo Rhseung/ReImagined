@@ -1,6 +1,5 @@
 package net.rhseung.reimagined.utils
 
-import net.rhseung.reimagined.tool.parts.BelongTo
 import kotlin.reflect.KClass
 
 class Type<T: Any> constructor(
@@ -8,5 +7,5 @@ class Type<T: Any> constructor(
 	vararg val annotations: Annotation
 ) {
 	val className = kclass.java.simpleName
-//	val belong = annotations.find { it is BelongTo }?.
+//	val belong = annotations.find { it is BelongsTo }?.
 }
