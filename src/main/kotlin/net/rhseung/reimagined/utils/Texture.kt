@@ -9,13 +9,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.color.item.ItemColorProvider
 import net.minecraft.client.item.ModelPredicateProviderRegistry
 import net.minecraft.client.world.ClientWorld
-import net.minecraft.data.client.TextureKey
 import net.minecraft.entity.LivingEntity
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
-import net.rhseung.reimagined.ReImagined.ID
 import net.rhseung.reimagined.datagen.ModModelGenerator
 import java.util.*
 import java.util.function.BiConsumer
@@ -85,7 +83,7 @@ object Texture {
 					
 					val eachPredicate = JsonObject()
 					overrideBuilder.predicates.forEach {
-						eachPredicate.addProperty(it.key.toString(), it.value.number)
+						eachPredicate.addProperty(it.key.toString(), 1)
 					}
 					
 					eachOverride.add("predicate", eachPredicate)

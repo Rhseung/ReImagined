@@ -4,13 +4,13 @@
     {
       "model": "reimagined:item/gear/shovel_broken",
       "predicate": {
-        "reimagined:gear_model": 1
+        "reimagined:broken": 1
       }
     },
     {
       "model": "reimagined:item/gear/shovel_grip",
       "predicate": {
-        "reimagined:gear_model": 2
+        "reimagined:grip": 1
       }
     }
   ],

@@ -13,11 +13,11 @@ object ReImagined : ModInitializer {
 		ModRecipes.registerAll()
 	}
 	
-	fun ID(path: String): Identifier {
+	fun modID(path: String): Identifier {
 		return Identifier(MOD_ID, path)
 	}
 	
-	fun MinecraftID(path: String): Identifier {
+	fun minecraftID(path: String): Identifier {
 		return Identifier("minecraft", path)
 	}
 }

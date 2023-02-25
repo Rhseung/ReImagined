@@ -32,6 +32,10 @@ enum class Material(
 	@Property(tier = 0, weight = 0, hardness = 1)
 	VINE(Items.VINE, Color.VINE),
 	
+	@Type(MaterialType.FIBER)
+	@Property(tier = 0, weight = 0, hardness = 1)
+	CHAIN(Items.CHAIN, Color.IRON.darker(10)),
+	
 	@Type(MaterialType.CLOTH)
 	@Property(tier = 0, weight = 0, hardness = 3)
 	LEATHER(Items.LEATHER, Color.LEATHER),

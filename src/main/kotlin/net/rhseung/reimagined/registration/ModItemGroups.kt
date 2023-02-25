@@ -5,13 +5,10 @@ import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.text.Text
-import net.minecraft.util.Identifier
-import net.rhseung.reimagined.ReImagined
-import net.rhseung.reimagined.ReImagined.ID
-import java.util.function.Supplier
+import net.rhseung.reimagined.ReImagined.modID
 
 object ModItemGroups {
-	val PARTS: ItemGroup = FabricItemGroup.builder(ID("parts"))
+	val PARTS: ItemGroup = FabricItemGroup.builder(modID("parts"))
 		.displayName(Text.translatable("Parts"))
 		.icon { ItemStack(Items.NETHERITE_PICKAXE) }
 		.build()

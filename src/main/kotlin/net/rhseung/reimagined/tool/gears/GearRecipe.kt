@@ -75,8 +75,6 @@ class GearRecipe constructor(
 		GearData.writeParts(output, selected!!.includeParts.map { it.element }, *parts)
 		GearData.reCalculate(output, selected!!.includeStats, *parts)
 		
-		println("do you have optional part: " + selected!!.getPart(output, selected!!.optionalParts[0].element))
-		
 		return output
 	}
 	

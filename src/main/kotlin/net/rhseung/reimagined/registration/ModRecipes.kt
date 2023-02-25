@@ -11,6 +11,7 @@ import net.rhseung.reimagined.tool.gears.GearRecipe
 
 object ModRecipes {
 	fun registerAll() {
+		registerRecipe(GearRecipe::class)
 		registerRecipe(GearRecipe.ID, GearRecipe.Type.INSTANCE, GearRecipe.Serializer.INSTANCE)
 	}
 }

@@ -19,7 +19,6 @@ class ModRecipeGenerator(
 		exporter.generate(GearRecipe.Serializer.INSTANCE, "gear/crafting_gear")
 		
 		ModItems.PARTS_LIST.forEach {
-			println("part: $it")
 			offerStonecuttingRecipe(exporter, RecipeCategory.TOOLS,
 				it, it.material.ingredient, (1 / it.amount.toDouble()).toInt())
 		}

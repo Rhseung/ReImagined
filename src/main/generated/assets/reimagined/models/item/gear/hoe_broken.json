@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:item/handheld",
   "textures": {
     "layer0": "reimagined:item/gear/hoe/handle_broken",
     "layer1": "reimagined:item/gear/hoe/hoehead_broken",

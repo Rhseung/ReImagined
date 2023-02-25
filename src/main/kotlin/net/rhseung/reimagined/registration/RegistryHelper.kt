@@ -5,16 +5,16 @@ import net.minecraft.block.Block
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
+import net.minecraft.recipe.CraftingRecipe
 import net.minecraft.recipe.RecipeSerializer
 import net.minecraft.recipe.RecipeType
 import net.minecraft.registry.Registries
 import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 import net.rhseung.reimagined.ReImagined
-import net.rhseung.reimagined.ReImagined.ID
+import net.rhseung.reimagined.ReImagined.modID
 import net.rhseung.reimagined.tool.Material
 import net.rhseung.reimagined.tool.gears.definition.Gear
-import net.rhseung.reimagined.tool.parts.MoreStats
 import net.rhseung.reimagined.tool.parts.definitions.BasicPart
 import net.rhseung.reimagined.tool.parts.definitions.Part
 import net.rhseung.reimagined.tool.parts.definitions.PartDefinition
@@ -87,10 +87,16 @@ object RegistryHelper {
 		recipeSerializer: RecipeSerializer<*>,
 	) {
 		Registry.register(
-			Registries.RECIPE_SERIALIZER, ID(id), recipeSerializer
+			Registries.RECIPE_SERIALIZER, modID(id), recipeSerializer
 		)
 		Registry.register(
-			Registries.RECIPE_TYPE, ID(id), recipeType
+			Registries.RECIPE_TYPE, modID(id), recipeType
 		)
+	}
+	
+	fun registerRecipe(
+		recipe: KClass<out CraftingRecipe>
+	) {
+	
 	}
 }

@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:item/handheld",
   "textures": {
     "layer0": "reimagined:item/gear/axe/handle_broken",
     "layer1": "reimagined:item/gear/axe/axehead_broken",

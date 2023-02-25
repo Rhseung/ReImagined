@@ -1,8 +1,7 @@
 package net.rhseung.reimagined.utils
 
 import net.minecraft.util.Identifier
-import net.rhseung.reimagined.ReImagined
-import net.rhseung.reimagined.ReImagined.ID
+import net.rhseung.reimagined.ReImagined.modID
 
 enum class Icon constructor(
 	vararg variants: String
@@ -22,6 +21,6 @@ enum class Icon constructor(
 	private var variants: List<String> = listOf("") + variants.asList()
 	
 	fun path(index: Int = 0): Identifier {
-		return ID("textures/icon/${name.lowercase() + variants[index]}.png")
+		return modID("textures/icon/${name.lowercase() + variants[index]}.png")
 	}
 }
