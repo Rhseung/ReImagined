@@ -41,6 +41,10 @@ enum class Stat constructor(
 		isInt = true,
 		defaultValue = 10.0F
 	),
+	KNOCKBACK(CalculateType.AVERAGE,
+       Color.GREEN,
+       defaultValue = 0.0F
+	),
 	
 	RANGED_DAMAGE(CalculateType.AVERAGE,
 		Color.AQUA,

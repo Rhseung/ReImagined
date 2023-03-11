@@ -73,6 +73,7 @@ class GearRecipe constructor(
 		}
 		
 		GearData.writeParts(output, selected!!.includeParts.map { it.element }, *parts)
+		println("$selected -> ${selected!!.includeStats}") // fixme
 		GearData.reCalculate(output, selected!!.includeStats, *parts)
 		
 		return output

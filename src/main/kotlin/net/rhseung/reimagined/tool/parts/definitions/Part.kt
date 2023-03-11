@@ -35,7 +35,7 @@ sealed class Part constructor(
 	@PartDefinition(
 		belongsTo = BasicPart.Handle::class,
 		materialType = Type(
-			disallow = [Material.MaterialType.FIBER]
+			disallow = [Material.MaterialType.FIBER, Material.MaterialType.CLOTH]
 		)
 	)
 	class Rod(override val material: Material) : Part(material, amount = 0.5)
@@ -53,7 +53,8 @@ sealed class Part constructor(
 		belongsTo = BasicPart.Head::class,
 		materialType = Type(
 			disallow = [Material.MaterialType.FIBER, Material.MaterialType.CLOTH]
-		)
+		),
+		moreStats = [Stat.KNOCKBACK]
 	)
 	class Blade(override val material: Material) : Part(material, amount = 1)
 	

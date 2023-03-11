@@ -6,6 +6,7 @@ import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.registry.*
 import net.minecraft.registry.tag.BlockTags
+import net.minecraft.registry.tag.ItemTags
 import net.rhseung.reimagined.registration.ModBlockTags
 import java.util.concurrent.CompletableFuture
 
@@ -15,6 +16,7 @@ class ModBlockTagGenerator(
 ) : FabricTagProvider<Block>(output, RegistryKeys.BLOCK, registriesFuture) {
 	
 	override fun configure(arg: RegistryWrapper.WrapperLookup?) {
+		
 		getOrCreateTagBuilder(BlockTags.NEEDS_STONE_TOOL).add(
 			Blocks.COPPER_BLOCK,
 			Blocks.RAW_COPPER_BLOCK,

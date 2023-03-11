@@ -107,6 +107,8 @@ enum class Material(
 			
 			Stat.ENCHANTABILITY -> min(7 - 0.5*tier + 2.5*(4 - weight), 25.0)
 			
+			Stat.KNOCKBACK -> weight * 0.5
+			
 			else -> error("$s 공식은 아직 만들어지지 않았습니다")
 		}.toFloat()
 	}

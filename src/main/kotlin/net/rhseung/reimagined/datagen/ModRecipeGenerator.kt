@@ -22,6 +22,7 @@ class ModRecipeGenerator(
 			offerStonecuttingRecipe(exporter, RecipeCategory.TOOLS,
 				it, it.material.ingredient, (1 / it.amount.toDouble()).toInt())
 		}
+		
 	}
 	
 	private fun <T : CraftingRecipe> Consumer<RecipeJsonProvider>.generate(

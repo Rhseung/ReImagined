@@ -251,6 +251,7 @@ class GearStack(
 		attacker: LivingEntity,
 	): Boolean {
 		if (isNotBroken) {
+			target.takeKnockback(getStat(Stat.KNOCKBACK).toDouble(), attacker.x - target.x, attacker.z - target.z)
 			damage(1, attacker) { e ->
 				e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND)
 			}
